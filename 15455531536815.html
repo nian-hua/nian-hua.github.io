@@ -1,0 +1,401 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  CTF在线考试 - NIANHUA BLOG
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="NIANHUA BLOG" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; NIANHUA BLOG</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">Home</a></li>
+        
+        <li><a target="_self" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="ctf.html.html">CTF</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>CTF在线考试</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2018/12/23</span>
+
+          
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>上次做过的CTF题目，今天在这里分享一下。<br/>
+可能有些地方写的不是很详细，但是希望大家可以谅解一下。<br/>
+<span id="more"></span><!-- more --><br/>
+[TOC]</p>
+
+<h2 id="toc_0">仿射密码</h2>
+
+<pre class="line-numbers"><code class="language-python">ciphertext：wizlpjrdoqlqnljaueaggy
+hint:b=25
+</code></pre>
+
+<p>好吧，这个题只给了b，没有给a。可以写脚本也可以手撕。<br/>
+<img src="media/15455531536815/15455534051743.jpg" alt="" style="width:1179px;"/></p>
+
+<pre class="line-numbers"><code class="language-text">flagiswcbpgpugshrjhxxt
+</code></pre>
+
+<h2 id="toc_1">常见密码</h2>
+
+<pre class="line-numbers"><code class="language-text">U2FsdGVkX18c0Kq5kgU6+N5FHKatwHHL1bDmsLSt0rDkbcupitDUsrtF4Tg3HK/t
+
+题目：hAcKingAnyTHing
+
+</code></pre>
+
+<p>看到题目，发现大小写混杂。可能使用了培根密码：<br/>
+<img src="media/15455531536815/15455535870546.jpg" alt="" style="width:791px;"/><br/>
+得到一个key，可能上面那串密文的密码是key。使用Des解密：<br/>
+<img src="media/15455531536815/15455536636343.jpg" alt="" style="width:1022px;"/><br/>
+得到明文：</p>
+
+<pre class="line-numbers"><code class="language-text">d_yM]p]p_]_ipjews_CeCrFaC{
+</code></pre>
+
+<p>由于flag一般为f开头，且题目提示只有大小写和下划线，猜测使用了ASCII凯撒：</p>
+
+<pre class="line-numbers"><code class="language-text">string = &quot;d_yM]p]p_]_ipjews_CeCrFaC{&quot;
+flag = &#39;&#39;
+for i in string:
+    flag += chr(ord(i)+2)
+print flag
+</code></pre>
+
+<p>运行脚本，得到一串：</p>
+
+<pre class="line-numbers"><code class="language-text">fa{O_r_ra_akrlgyuaEgEtHcE}
+</code></pre>
+
+<p>可以看出来使用了移位密码：<br/>
+<img src="media/15455531536815/15455538799557.jpg" alt="" style="width:231px;"/><br/>
+解密得到flag:</p>
+
+<pre class="line-numbers"><code class="language-text">flag{yOu_arE_grEat_HackEr}
+</code></pre>
+
+<h2 id="toc_2">迪菲-赫尔曼</h2>
+
+<p>好吧，这个名字一看就是密钥交换。题目如下：</p>
+
+<pre class="line-numbers"><code class="language-text">你们共同有一个公开已知生成元g=39
+你的私钥=3777
+小明向你发来协商数据：64205772047053590787855291407637
+保证长度的质数为：72542982052896163041354492265957
+</code></pre>
+
+<p>根据题目提示，我们可以得到以下信息：</p>
+
+<pre class="line-numbers"><code class="language-text">p:72542982052896163041354492265957
+g:39
+B:64205772047053590787855291407637
+a:3777
+</code></pre>
+
+<p>根据 <code>K = B^a mod p</code> 可以得到</p>
+
+<pre class="line-numbers"><code class="language-text">K:63181293419681044414420229864725
+</code></pre>
+
+<p>好吧，这个就是flag</p>
+
+<h2 id="toc_3">破镜重圆</h2>
+
+<p>流量分析题<br/>
+<img src="media/15455531536815/15455541875165.jpg" alt="" style="width:1351px;"/><br/>
+数据包中以HTTP流量居多，使用导出HTTP文件。<br/>
+<img src="media/15455531536815/15455543344405.jpg" alt="" style="width:447px;"/><br/>
+导出的文件中含有一张PNG图片，但是显示损坏。二进制查看：<br/>
+<img src="media/15455531536815/15455543840985.jpg" alt="" style="width:1018px;"/><br/>
+发现缺少文件头，补齐89504e470d0a1a0a0000000d<br/>
+<img src="media/15455531536815/15455544737037.jpg" alt="" style="width:702px;"/></p>
+
+<h2 id="toc_4">暴力可解</h2>
+
+<p>呀呀呀，压缩包带密码，根据题目提示，使用暴力破解：<br/>
+<img src="media/15455531536815/15455545707344.jpg" alt="" style="width:456px;"/><br/>
+解出来两张图片，估计是盲水印攻击，使用<a href="https://github.com/chishaxie/BlindWaterMark">脚本</a>解密：<br/>
+<img src="media/15455531536815/15455546425792.jpg" alt="" style="width:660px;"/><br/>
+得到水印：<br/>
+<img src="media/15455531536815/15455546744689.jpg" alt="" style="width:1348px;"/></p>
+
+<h2 id="toc_5">黑客偷走了文件</h2>
+
+<p>依旧流量分析题，跟踪FTP数据流</p>
+
+<pre class="line-numbers"><code class="language-text">220 HI, i know you are a hacker who is trying to hack me ,but can u find where is the flag?a
+USER ctf
+331 Password required for ctf
+PASS ctf
+230 Client :ctf successfully logged in. Client IP :172.16.66.100
+PORT 172,16,66,100,31,196
+200 Port command successful.
+LIST
+150 Opening ASCII mode data connection for directory list.
+226 Transfer complete.
+PORT 172,16,66,100,31,197
+200 Port command successful.
+RETR 82f2ebc979b706e5aac8e158bf3cbaa2.rar
+150 Opening BINARY mode data connection for file transfer.
+226 Transfer complete.
+QUIT
+220 Bye
+</code></pre>
+
+<p>发现黑客偷走了一个压缩包，直接用Wireshark提取有点复杂，使用 foremost分离。<br/>
+<img src="media/15455531536815/15455549970006.jpg" alt="" style="width:396px;"/><br/>
+得到一个压缩包。使用ARCHPR 破解，密码是四位数字。解压缩得到flag。</p>
+
+<pre class="line-numbers"><code class="language-text">flag{6e8524c7d3beca580321f8ca7c7ffa26}
+</code></pre>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="testing-my-best.html" 
+          title="Previous Post: www.aokangtiyu.com">&laquo; www.aokangtiyu.com</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="https://avatars1.githubusercontent.com/u/41846038" /></div>
+            
+                <h1>NIANHUA BLOG</h1>
+                <div class="site-des">低级信息安全研究员</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/nian-hua/" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:nianhua@mail.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="ctf.html.html"><strong>CTF</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="testing-my-name.html">测试</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="testing-my-best.html">www.aokangtiyu.com</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15455531536815.html">CTF在线考试</a>
+			      </li>
+		     
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2019
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Visit <a target="_blank" href="http://github.com/nianhua">My GitHub</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
+
+  </body>
+</html>

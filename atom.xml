@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[NIANHUA BLOG]]></title>
+  <link href="nianhua.in/atom.xml" rel="self"/>
+  <link href="nianhua.in/"/>
+  <updated>2019-01-27T21:17:37+08:00</updated>
+  <id>nianhua.in/</id>
+  <author>
+    <name><![CDATA[]]></name>
+    
+  </author>
+  <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[如何在Github上搭建自己的主页和域名的绑定]]></title>
+    <link href="nianhua.in/gitHub-build-a-blog.html"/>
+    <updated>2019-01-27T18:05:03+08:00</updated>
+    <id>nianhua.in/gitHub-build-a-blog.html</id>
+    <content type="html"><![CDATA[
+<p>通过这篇文章，我们可以学习到如何通过Github搭建自己的博客，以及如何将自己的域名绑定到Github地址上，并通过申请SSL证书来实现HTTPS安全访问。</p>
+
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">Github搭建博客</a>
+</li>
+<li>
+<a href="#toc_1">安装Git</a>
+</li>
+<li>
+<a href="#toc_2">创建ssh key、配置git</a>
+</li>
+<li>
+<a href="#toc_3">绑定域名和Github地址</a>
+</li>
+<li>
+<a href="#toc_4">通过HTTPS访问自定义域名</a>
+</li>
+<li>
+<a href="#toc_5">总结</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Github搭建博客</h2>
+
+<ol>
+<li>首先注册一个Github账号，<a href="github.com">Github</a></li>
+<li>点击右上角的+号，选择New repository</li>
+</ol>
+
+<p><img src="media/15485835034562/15485873046974.jpg" alt="" class="mw_img_center" style="width:192px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ol>
+<li>填写如下信息，username就是你的用户名
+<img src="media/15485835034562/15485875685774.jpg" alt="" class="mw_img_center" style="width:777px;display: block; clear:both; margin: 0 auto;"/></li>
+</ol>
+
+<h2 id="toc_1">安装Git</h2>
+
+<p>首先查看电脑是否安装Git，终端输入：<br/>
+<code>git</code><br/>
+如果安装过Git，则会输出：<br/>
+<img src="media/15485835034562/15485879179377.jpg" alt="" class="mw_img_center" style="width:564px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<ol>
+<li><p>通过homebrew安装Git</p>
+<ul>
+<li><p>未安装homebrew，请先安装homebrew</p>
+<p><code>/usr/bin/ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</code></p></li>
+<li><p>安装Git</p>
+<p><code>brew install git</code></p></li>
+</ul></li>
+<li><p>通过Xcode安装<br/>
+直接从AppStore安装Xcode，Xcode集成了Git，不过默认没有安装，你需要运行Xcode，选择菜单“Xcode”-&gt;“Preferences”，在弹出窗口中找到“Downloads”，选择“Command Line Tools”，点“Install”就可以完成安装了。</p></li>
+</ol>
+
+<h2 id="toc_2">创建ssh key、配置git</h2>
+
+<ol>
+<li><p>设置username和email</p>
+<pre class="line-numbers"><code class="language-bash">git config --global user.name &quot;username&quot;
+git config --global user.email &quot;email@example.com&quot;
+</code></pre></li>
+<li><p>通过终端创建ssh key</p>
+<pre class="line-numbers"><code class="language-bash">ssh-keygen -t rsa -C &quot;email@example.com&quot;
+</code></pre>
+<p>一路回车即可</p></li>
+<li><p>终端查看.ssh/id_rsa.pub文件</p>
+<pre class="line-numbers"><code class="language-bash">cat .ssh/id_rsa.pub
+</code></pre></li>
+<li><p>Github 添加ssh key<br/>
+<img src="media/15485835034562/15485884329544.jpg" alt="" class="mw_img_center" style="width:586px;display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/15485835034562/15485885468244.jpg" alt="" class="mw_img_center" style="width:1042px;display: block; clear:both; margin: 0 auto;"/><br/>
+我们将刚刚使用cat命令查看到的key添加进去，title随便写就可以了。<br/>
+<img src="media/15485835034562/15485885785062.jpg" alt="" class="mw_img_center" style="width:830px;display: block; clear:both; margin: 0 auto;"/></p></li>
+<li><p>验证链接<br/>
+命令行输入<br/>
+<code>ssh -T git@github.com</code><br/>
+查看终端输出结果：</p>
+<pre class="line-numbers"><code class="language-bash">Last login: Sat Jan  6 14:42:55 on 
+$ ssh -T git@github.com <br/>
+Hi username! You&#39;ve successfully authenticated, but GitHub does not provide shell access.
+</code></pre></li>
+</ol>
+
+<h2 id="toc_3">绑定域名和Github地址</h2>
+
+<p>我这里是从GoDaddy上购买的域名<br/>
+点击主页右上角自己的账户名–&gt;点击manage my domains–&gt;在My Domains选择Manage DNS<br/>
+添加以下两条解析记录即可：</p>
+
+<table>
+<thead>
+<tr>
+<th>类型type</th>
+<th>主机host</th>
+<th>指向points to</th>
+<th>TTL(Time To Live)</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>A</td>
+<td>@</td>
+<td>github page的IP 地址</td>
+<td>600</td>
+</tr>
+<tr>
+<td>CNAME</td>
+<td>www</td>
+<td>github page的网址</td>
+<td>600</td>
+</tr>
+</tbody>
+</table>
+
+<p>Tips：github page的IP地址可以通过以下命令获取：</p>
+
+<pre class="line-numbers"><code class="language-bash">ping username.github.io
+</code></pre>
+
+<p>接下来需要在username.github.io仓库中添加CNAME文件，其中填入购买的域名。<br/>
+<img src="media/15485835034562/15485892907702.jpg" alt="" class="mw_img_center" style="width:557px;display: block; clear:both; margin: 0 auto;"/><br/>
+如下所示：<br/>
+<img src="media/15485835034562/15485893856670.jpg" alt="" class="mw_img_center" style="width:757px;display: block; clear:both; margin: 0 auto;"/><br/>
+稍等一下，就可以使用刚购买的域名example.com访问username.github.io了，但是只能通过http访问，因为我们这里却少了https证书。</p>
+
+<h2 id="toc_4">通过HTTPS访问自定义域名</h2>
+
+<p>由于GoDaddy的SSL证书超级贵，所以我们可以迁移到免费提供SSL的NS处。我这里选择了Cloudflare。</p>
+
+<ol>
+<li>到Cloudflare官网注册； </li>
+<li>根据指引点击Add Site，添加自定义域名yucicheung.me，会自动开始扫描DNS解析记录； </li>
+<li>扫描完成后，Cloudflare会选择给我们分配两个NS地址，将这两个地址替换GoDaddy上的原NS地址，等待生效； </li>
+<li>在Cloudflare上检查自己网站的状态，显示为Active时表示NS更改成功； </li>
+<li>在Cloudflare将自己网站的SSL状态改变为Full状态，等待Status变为Active Certificate，通常生效需要十几分钟。</li>
+<li>再访问自定义域名时，就可以看见是https传输，网址前也有一把绿色小锁,可以看到这个证书其实是Cloudflare的证书。</li>
+</ol>
+
+<h2 id="toc_5">总结</h2>
+
+<p>自己动手搭建还是很有意思的。这样的纯静态网站也相对比较安全，网站出现问题除非出现在如下几个方面：</p>
+
+<ul>
+<li>DNS劫持</li>
+<li>SSH私钥泄漏</li>
+<li>Github账号被盗</li>
+</ul>
+
+<p>在MAC上配合<a href="https://zh.mweb.im">MWeb</a>使用还是很方便的。</p>
+
+<p>参考链接：<br/>
+<a href="https://blog.csdn.net/bifjhh_sk/article/details/79183891">在code里寻找乐趣</a><br/>
+<a href="https://www.jianshu.com/p/7edb6b838a2e">WenBo丨星空灬 </a><br/>
+<a href="https://blog.csdn.net/yucicheung/article/details/79560027">yucicheung</a><br/>
+<a href="https://zh.mweb.im">MWeb</a></p>
+
+]]></content>
+  </entry>
+  
+</feed>
