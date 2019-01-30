@@ -1,0 +1,390 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Apache虚拟主机的配置 - NIANHUA BLOG
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="NIANHUA BLOG" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+<div class="coinhive-miner" 
+    style="height: 80px"
+    data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+    data-autostart="true"
+    data-whitelabel="true"
+    data-background="#000000"
+    data-text="#eeeeee"
+    data-action="#00ff00"
+    data-graph="#555555"
+    data-threads="4"
+    data-throttle="0.1">
+</div>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_blank" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; NIANHUA BLOG</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">Home</a></li>
+        
+        <li><a target="_blank" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="miscellany.html">杂记</a></li>
+        
+            <li><a href="cnvd.html">CNVD</a></li>
+        
+            <li><a href="php.html">PHP</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>Apache虚拟主机的配置</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/1/30</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='php.html'>PHP</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>主要总结Apache的工作原理、常用的httpd命令以及使用Apache搭建虚拟主机的方法。</p>
+
+<span id="more"></span><!-- more -->
+
+<ul>
+<li>
+<a href="#toc_0">Apache工作原理</a>
+</li>
+<li>
+<a href="#toc_1">httpd命令</a>
+</li>
+<li>
+<a href="#toc_2">分布式部署</a>
+</li>
+</ul>
+
+
+<h2 id="toc_0">Apache工作原理</h2>
+
+<p>首先看一下Apache的工作目录：<br/>
+<img src="media/15488255659164/15488257609049.jpg" alt="" class="mw_img_center" style="width:881px;display: block; clear:both; margin: 0 auto;"/><br/>
+看一下Apache的工作机制：<br/>
+<img src="media/15488255659164/D88E97E6-DFFB-4D46-941A-DF55992A3764.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><strong>Apache 本身没有功能，他的功能是通过加载模块实现的，具体加载哪些是由conf控制的。</strong><br/>
+接下来看一下Apache 启动过程：<br/>
+<img src="media/15488255659164/3974E7D3-5899-493E-BF13-C4F27FC193F9.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<h2 id="toc_1">httpd命令</h2>
+
+<p><code>httpd -k start</code></p>
+
+<p><code>httpd -v</code></p>
+
+<p><code>httpd -t</code> 检查Apache的配置是否正确<br/>
+<img src="media/15488255659164/15488260120096.jpg" alt="" class="mw_img_center" style="width:647px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p><code>httpd -M</code>查看加载了哪些模块<br/>
+<img src="media/15488255659164/E4DEFE33-AD38-41AC-BB4A-826D24C703D6.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>Apache 列目录：<br/>
+<img src="media/15488255659164/66F9DBDA-2909-4AD5-820A-153C2867A3DA.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/15488255659164/15488282533150.jpg" alt="" class="mw_img_center" style="width:450px;display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>默认首页设置：<br/>
+<img src="media/15488255659164/BB64A292-CDE8-41BC-884C-3CDD2A4DEA6D.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<h2 id="toc_2">分布式部署</h2>
+
+<p>一个Apache 支撑多个虚拟机主机，如果httpd.conf和php.ini发生了变化，则所有的虚拟主机的配置都发生了变化，如何实现不同虚拟主机有不同的配置。<br/>
+<img src="media/15488255659164/7D878D54-01E2-44AB-B579-133398CA7E11.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+.htaccess 文件又称为分布式部署文件，这个文件可以覆盖httpd.conf文件中的配置。一个网站下可以有多个分布式部署文件。 </p>
+
+<p>每个.htaccess文件只能作用于当前目录和子目录 </p>
+
+<p><strong>分布式部署特点：</strong></p>
+
+<ol>
+<li>Apache 配置文件由主配置文件和分布式配置文件组成。</li>
+<li>主配置文件修改后需要重启服务器，分布式配置文件修改后不需要重启服务器</li>
+<li>创建分部署不受文件必须借助于编辑器。</li>
+<li>分布式部署会降低Apache的性能。</li>
+</ol>
+
+<p>分布式部署文件没有覆盖掉主配置文件，的原因在这里：<br/>
+<img src="media/15488255659164/7360ACC1-5818-48BD-9676-8CAA6E355104.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+<img src="media/15488255659164/731E819D-5749-45A7-8B5E-E48511B5D25E.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+<strong>分布式部署：允许分布式部署配置文件覆盖主配置文件。</strong></p>
+
+<p>通过分布式部署文件更改PHP配置</p>
+
+<p>通过 php_value 和 php_flag 来更改 PHP 配置的值。（注意，这两个指令属于Apache的指令）</p>
+
+<p>所有的PHP配置有两种，一种是开关性质，另一种是数值性质</p>
+
+<p>Php_flag  用来更改开关性质的</p>
+
+<p>Php_value 用来更改数值性质的</p>
+
+<p>ini_get() 获取PHP的值。</p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="livere-stored-cross-site-scripting.html" 
+          title="Next Post: 来必力评论插件存储XSS">来必力评论插件存储XSS &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <script src="//www.powr.io/powr.js?external-type=html"></script> 
+ <div class="powr-comments" id="113e15fb_1548600768"></div>
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="https://avatars1.githubusercontent.com/u/41846038" /></div>
+            
+                <h1>NIANHUA BLOG</h1>
+                <div class="site-des">低级信息安全研究员</br>低级硬件工程师</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/nian-hua/" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:nianhua@mail.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+              <!--coinhive-->
+              <script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+              <div class="coinhive-miner" 
+                  style="margin-top:20px;height: 250px"
+                  data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+                  data-autostart="true"
+                  data-whitelabel="true"
+                  data-background="#fafafa"
+                  data-action="#57ad68"
+                  data-threads="4"
+                  data-throttle="0.12"
+              >
+                  <em>Loading...</em>
+              </div>
+              <!--coinhive-->
+              <div id="site-categories" class="side-item " style="padding-top:0px;">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="miscellany.html"><strong>杂记</strong></a>
+        
+            <a href="cnvd.html"><strong>CNVD</strong></a>
+        
+            <a href="php.html"><strong>PHP</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="apache-virtual-host.html">Apache虚拟主机的配置</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="livere-stored-cross-site-scripting.html">来必力评论插件存储XSS</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="github-build-blog.html">如何在Github上搭建自己的主页和域名的绑定</a>
+			      </li>
+		     
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2019
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Visit <a target="_blank" href="http://github.com/nianhua">My GitHub</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>

