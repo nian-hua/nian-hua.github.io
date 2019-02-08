@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  如何在Github上搭建自己的主页和域名的绑定 - NIANHUA BLOG
+  手机主宰了你的生活，这不是乔布斯想看到的 - NIANHUA BLOG
   
   </title>
   
@@ -117,10 +117,10 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>如何在Github上搭建自己的主页和域名的绑定</h1>
+          <h1>手机主宰了你的生活，这不是乔布斯想看到的</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2019/1/27</span>
+          <span class="date">2019/2/9</span>
 
           <span>posted in&nbsp;</span> 
           
@@ -137,171 +137,36 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>通过这篇文章，我们可以学习到如何通过Github搭建自己的博客，以及如何将自己的域名绑定到Github地址上，并通过申请SSL证书来实现HTTPS安全访问。</p>
+      <p><img src="media/15496466514970/15496467699719.jpg" alt=""/></p>
 
 <span id="more"></span><!-- more -->
 
-<ul>
-<li>
-<a href="#toc_0">Github搭建博客</a>
-</li>
-<li>
-<a href="#toc_1">安装Git</a>
-</li>
-<li>
-<a href="#toc_2">创建ssh key、配置git</a>
-</li>
-<li>
-<a href="#toc_3">绑定域名和Github地址</a>
-</li>
-<li>
-<a href="#toc_4">通过HTTPS访问自定义域名</a>
-</li>
-<li>
-<a href="#toc_5">总结</a>
-</li>
-</ul>
+<p>智能手机是我们忠实的伴侣。对于我们中的很多人来说，它亮着光的屏幕无处不在，无休止地转移我们的注意力，比如那些温暖的提示音，代表着社交认可，以喜欢和转发的形式送达，还有最新的“突发”新闻或争论中被算法放大的愤怒。一醒来，它们就在我们手中，博得我们的注意，直到入睡前的最后时刻。</p>
 
+<p><em>史蒂夫·乔布斯(Steve Jobs)不会赞成。</em></p>
 
-<hr/>
+<p>2007年，乔布斯在旧金山莫斯克尼会议中心(Moscone Convention Center)登台，向全世界介绍iPhone。如果你看了完整的演讲，他对我们与这个标志性发明之间关系的想象会令你惊讶，因为他的愿景与现在我们大多数人使用该设备的方式截然不同。</p>
 
-<p>3</p>
+<p>在讲话中探讨这款手机的界面和硬件之后，乔布斯花了很长时间展示该设备如何利用触摸屏，然后详细介绍了苹果工程师改进过去电话拨打流程的多种方式。“这是我们做过的最好的iPod，”乔布斯感叹道。“拨打电话是最为惊艳的应用，”他后来又补充说。这两句话都引发了雷鸣般的掌声。在讲话的前30分钟内，他都没有花任何重要时间来讨论手机的互联网连接功能。</p>
 
-<h2 id="toc_0">Github搭建博客</h2>
+<p>这场发布会证实，比起我们在十多年后所实际拥有的，乔布斯憧憬的是一种更简单、更具约束力的iPhone体验。比如，他不太侧重应用程序。iPhone最初推出时没有应用商店，而且原本就是这样设计的。iPhone团队最初成员安迪·格里尼翁(Andy Grignon)在我研究这个问题时告诉我，乔布斯当时不信任第三方开发商能提供与苹果程序员同等的美感和稳定体验。他确信，这款手机精心设计的原生应用已足够。它是“一款能打电话的iPod”，格里尼翁对我说。</p>
 
-<ol>
-<li>首先注册一个Github账号，<a href="github.com">Github</a></li>
-<li>点击右上角的+号，选择New repository</li>
-</ol>
+<p>乔布斯似乎将iPhone理解为能帮我们处理少量活动的玩意儿——听音乐、打电话、导航。他并不追求大大改变用户的日常生活节奏。他只想选取我们已经认为重要的体验，让它们变得更好。</p>
 
-<p><img src="media/15485835034562/15485873046974.jpg" alt="" class="mw_img_center" style="width:192px;display: block; clear:both; margin: 0 auto;"/></p>
+<p>他在2007年推出的iPhone的极简主义愿景到今天已面目全非——这很可惜。<br/>
+在我所称的“忠实陪伴模式”之下，如今，我们将智能手机视为持续开启的信息通道。这一模式没有改进我们在该技术存在之前便认为重要的活动，反而改变了我们最初关注的方向——它通常旨在抬高注意力经济巨头们的股价，而不是增进我们的满足感和福祉。</p>
 
-<ol>
-<li>填写如下信息，username就是你的用户名
-<img src="media/15485835034562/15485875685774.jpg" alt="" class="mw_img_center" style="width:777px;display: block; clear:both; margin: 0 auto;"/></li>
-</ol>
+<p>过去十年来，我们太过于习惯这个忠实陪伴模式，以致于很容易忘记它的新奇可贵之处。作为兼写一些科技如何影响文化类文章的计算机科学家，我认为有必要指出这一转变是多么巨大，而且有一点对我似乎越来越明确，即乔布斯很可能一开始就是对的：如果回归他最初设想的手机极简主义愿景，我们当中很多人都会过得更好。</p>
 
-<h2 id="toc_1">安装Git</h2>
+<p>实际上，成为一名极简主义智能手机用户意味着，你要把这个设备用于少量你所珍视的事情（也是这个手机特别擅长的事情），除这些活动外，把它收起来。这一做法会使这个玩意儿摆脱忠实陪伴角色，成为奢侈品，就像别致的自行车或高端搅拌器一样，它能在使用时给你愉悦感，但不会主宰你的一整天。</p>
 
-<p>首先查看电脑是否安装Git，终端输入：<br/>
-<code>git</code><br/>
-如果安装过Git，则会输出：<br/>
-<img src="media/15485835034562/15485879179377.jpg" alt="" class="mw_img_center" style="width:564px;display: block; clear:both; margin: 0 auto;"/></p>
+<p>为成功实现这种做法，第一个有用的步骤是移除智能手机上任何依靠你的注意力来赚钱的应用，包括社交媒体、引人上瘾的游戏和让屏幕塞满“突发”消息通知的新闻推送。除非从事有线新闻制作，否则你不需要每分每秒都知晓最新世界动态；就算你得等到回家才能用电脑登录Facebook或Instagram，你的友谊也应该能够保住。此外，摒弃直接用手机在社交媒体上发布精心编辑的照片这一能力，还可以让你活在美好的当下，摆脱非要把它记录下来不可的强迫冲动。</p>
 
-<ol>
-<li><p>通过homebrew安装Git</p>
-<ul>
-<li><p>未安装homebrew，请先安装homebrew</p>
-<p><code>/usr/bin/ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</code></p></li>
-<li><p>安装Git</p>
-<p><code>brew install git</code></p></li>
-</ul></li>
-<li><p>通过Xcode安装<br/>
-直接从AppStore安装Xcode，Xcode集成了Git，不过默认没有安装，你需要运行Xcode，选择菜单“Xcode”-&gt;“Preferences”，在弹出窗口中找到“Downloads”，选择“Command Line Tools”，点“Install”就可以完成安装了。</p></li>
-</ol>
+<p>将我们的注意力转移到专业活动中去，如果你的工作并非绝对要求你不在办公桌边也能通过电子邮件联系上，那就删除Gmail应用程序，或者断开办公室服务器和手机内置电子邮件客户端的连接。在外出时偶尔登录查看邮件很方便，但这种偶尔的方便几乎总以难以抑制自己不断监控信息的欲望为代价。如果你不确定自己的工作是否需要手机上的电子邮件功能，那就别去问；只需删除应用程序，等着看看这样是否会导致问题——许多人无意识地夸大了自己总能被联系上的必要性。</p>
 
-<h2 id="toc_2">创建ssh key、配置git</h2>
+<p>一旦摆脱了吵着要求得到关注的数字聒噪，你的智能手机将回归到更接近乔布斯最初设想的角色。它将成为一个精心设计的物品，在一天中会偶尔出现，支持（而不是颠覆）你对美好生活的努力：它可以帮你找到一首完美适合在阳光明媚的秋日下午走过城镇时听的歌曲；它会储存前往餐厅会见好友的路线；只需几次滑动，它就可以让你给妈妈打个电话——然后它就可以回到你的口袋里、你的包里或者大门一侧的边桌上，而你则继续从事现实生活里的各种事情。</p>
 
-<ol>
-<li><p>设置username和email</p>
-<pre class="line-numbers"><code class="language-bash">git config --global user.name &quot;username&quot;
-git config --global user.email &quot;email@example.com&quot;
-</code></pre></li>
-<li><p>通过终端创建ssh key</p>
-<pre class="line-numbers"><code class="language-bash">ssh-keygen -t rsa -C &quot;email@example.com&quot;
-</code></pre>
-<p>一路回车即可</p></li>
-<li><p>终端查看.ssh/id_rsa.pub文件</p>
-<pre class="line-numbers"><code class="language-bash">cat .ssh/id_rsa.pub
-</code></pre></li>
-<li><p>Github 添加ssh key<br/>
-<img src="media/15485835034562/15485884329544.jpg" alt="" class="mw_img_center" style="width:586px;display: block; clear:both; margin: 0 auto;"/><br/>
-<img src="media/15485835034562/15485885468244.jpg" alt="" class="mw_img_center" style="width:1042px;display: block; clear:both; margin: 0 auto;"/><br/>
-我们将刚刚使用cat命令查看到的key添加进去，title随便写就可以了。<br/>
-<img src="media/15485835034562/15485885785062.jpg" alt="" class="mw_img_center" style="width:830px;display: block; clear:both; margin: 0 auto;"/></p></li>
-<li><p>验证链接<br/>
-命令行输入<br/>
-<code>ssh -T git@github.com</code><br/>
-查看终端输出结果：</p>
-<pre class="line-numbers"><code class="language-bash">Last login: Sat Jan  6 14:42:55 on 
-$ ssh -T git@github.com <br/>
-Hi username! You&#39;ve successfully authenticated, but GitHub does not provide shell access.
-</code></pre></li>
-</ol>
-
-<h2 id="toc_3">绑定域名和Github地址</h2>
-
-<p>我这里是从GoDaddy上购买的域名<br/>
-点击主页右上角自己的账户名–&gt;点击manage my domains–&gt;在My Domains选择Manage DNS<br/>
-添加以下两条解析记录即可：</p>
-
-<table>
-<thead>
-<tr>
-<th>类型type</th>
-<th>主机host</th>
-<th>指向points to</th>
-<th>TTL(Time To Live)</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>A</td>
-<td>@</td>
-<td>github page的IP 地址</td>
-<td>600</td>
-</tr>
-<tr>
-<td>CNAME</td>
-<td>www</td>
-<td>github page的网址</td>
-<td>600</td>
-</tr>
-</tbody>
-</table>
-
-<p>Tips：github page的IP地址可以通过以下命令获取：</p>
-
-<pre class="line-numbers"><code class="language-bash">ping username.github.io
-</code></pre>
-
-<p>接下来需要在username.github.io仓库中添加CNAME文件，其中填入购买的域名。<br/>
-<img src="media/15485835034562/15485892907702.jpg" alt="" class="mw_img_center" style="width:557px;display: block; clear:both; margin: 0 auto;"/><br/>
-如下所示：<br/>
-<img src="media/15485835034562/15485893856670.jpg" alt="" class="mw_img_center" style="width:757px;display: block; clear:both; margin: 0 auto;"/><br/>
-稍等一下，就可以使用刚购买的域名example.com访问username.github.io了，但是只能通过http访问，因为我们这里却少了https证书。</p>
-
-<h2 id="toc_4">通过HTTPS访问自定义域名</h2>
-
-<p>由于GoDaddy的SSL证书超级贵，所以我们可以迁移到免费提供SSL的NS处。我这里选择了Cloudflare。</p>
-
-<ol>
-<li>到Cloudflare官网注册； </li>
-<li>根据指引点击Add Site，添加自定义域名example.com,自动开始扫描DNS解析记录； </li>
-<li>扫描完成后，Cloudflare会选择给我们分配两个NS地址，将这两个地址替换GoDaddy上的原NS地址，等待生效； </li>
-<li>在Cloudflare上检查自己网站的状态，显示为Active时表示NS更改成功； </li>
-<li>在Cloudflare将自己网站的SSL状态改变为Full状态，等待Status变为Active Certificate，通常生效需要十几分钟。</li>
-<li>再访问自定义域名时，就可以看见是https传输，网址前也有一把绿色小锁,可以看到这个证书其实是Cloudflare的证书。</li>
-</ol>
-
-<h2 id="toc_5">总结</h2>
-
-<p>自己动手搭建还是很有意思的。这样的纯静态网站也相对比较安全，网站出现问题除非出现在如下几个方面：</p>
-
-<ul>
-<li>DNS劫持</li>
-<li>SSH私钥泄漏</li>
-<li>Github账号被盗</li>
-</ul>
-
-<p>在MAC上配合<a href="https://zh.mweb.im">MWeb</a>使用还是很方便的。</p>
-
-<p>参考链接：<br/>
-<a href="https://blog.csdn.net/bifjhh_sk/article/details/79183891">在code里寻找乐趣</a><br/>
-<a href="https://www.jianshu.com/p/7edb6b838a2e">WenBo丨星空灬 </a><br/>
-<a href="https://blog.csdn.net/yucicheung/article/details/79560027">yucicheung</a><br/>
-<a href="https://zh.mweb.im">MWeb</a></p>
+<p>早在他2007年的主题演讲中，乔布斯就曾说，“今天，苹果将重塑手机。”然而，他没有进一步承诺说，“明天，我们将重塑你的生活。”iPhone是一款出色的手机，但它从来无意成为数字技术日益蚕食模拟技术这种新生活方式的基础。如果你让这种创新产品回归到其原本的有限角色，你将从手机和生活之中获得更多。</p>
 
 
     
@@ -312,13 +177,13 @@ Hi username! You&#39;ve successfully authenticated, but GitHub does not provide 
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="livere-stored-cross-site-scripting.html" 
-          title="Previous Post: 来必力评论插件存储XSS">&laquo; 来必力评论插件存储XSS</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="apache-virtual-host.html" 
+          title="Next Post: Apache虚拟主机的配置">Apache虚拟主机的配置 &raquo;</a>
       
       </p>
         </div>
