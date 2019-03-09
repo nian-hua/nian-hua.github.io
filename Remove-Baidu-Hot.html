@@ -1,0 +1,499 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  编写屏蔽百度推荐插件 - NIANHUA BLOG
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="NIANHUA BLOG" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+<div class="coinhive-miner" 
+    style="height: 80px"
+    data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+    data-autostart="false"
+    data-whitelabel="true"
+    data-background="#000000"
+    data-text="#eeeeee"
+    data-action="#00ff00"
+    data-graph="#555555"
+    data-threads="4"
+    data-throttle="0.1">
+</div>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_blank" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; NIANHUA BLOG</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">Home</a></li>
+        
+        <li><a target="_blank" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="miscellany.html">杂记</a></li>
+        
+            <li><a href="cnvd.html">CNVD</a></li>
+        
+            <li><a href="php.html">PHP</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>编写屏蔽百度推荐插件</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/3/9</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='miscellany.html'>杂记</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>每次打开百度，我都会看到一堆广告。除此之外还有就是搜索热点经常诱惑我点开，耽误我学习～～～</p>
+
+<span id="more"></span><!-- more -->
+
+<h2 id="toc_0">为什么要做这个插件</h2>
+
+<p><img src="media/15521195936776/15521196910134.jpg" alt="" style="width:1252px;"/><br/>
+如上图所示：是在是太恶心了，让我感觉很郁闷。于是萌生了编写一个去除推荐的插件的想法。</p>
+
+<h2 id="toc_1">谷歌插件入门</h2>
+
+<p>Chrome插件没有严格的项目结构要求，只要保证本目录有一个manifest.json即可，也不需要专门的IDE，普通的web开发工具即可。</p>
+
+<p>从右上角菜单-&gt;更多工具-&gt;扩展程序可以进入 插件管理页面，也可以直接在地址栏输入 chrome://extensions 访问。</p>
+
+<p><img src="media/15521195936776/15521198841512.jpg" alt="" style="width:727px;"/></p>
+
+<p>勾选开发者模式即可以文件夹的形式直接加载插件，否则只能安装.crx格式的文件。Chrome要求插件必须从它的Chrome应用商店安装，其它任何网站下载的都无法直接安装，所以，其实我们可以把crx文件解压，然后通过开发者模式直接加载。</p>
+
+<p>开发中，代码有任何改动都必须重新加载插件，只需要在插件管理页按下Ctrl+R即可，以防万一最好还把页面刷新一下。</p>
+
+<h2 id="toc_2">基础知识</h2>
+
+<h3 id="toc_3">manifest.json</h3>
+
+<p>这是一个Chrome插件最重要也是必不可少的文件，用来配置所有和插件相关的配置，必须放在根目录。其中，manifest_version、name、version3个是必不可少的，description和icons是推荐的。</p>
+
+<p>下面给出的是一些常见的配置项，均有中文注释。</p>
+
+<pre class="line-numbers"><code class="language-text">{
+    // 清单文件的版本，这个必须写，而且必须是2
+    &quot;manifest_version&quot;: 2,
+    // 插件的名称
+    &quot;name&quot;: &quot;demo&quot;,
+    // 插件的版本
+    &quot;version&quot;: &quot;1.0.0&quot;,
+    // 插件描述
+    &quot;description&quot;: &quot;简单的Chrome扩展demo&quot;,
+    // 图标，一般偷懒全部用一个尺寸的也没问题
+    &quot;icons&quot;:
+    {
+        &quot;16&quot;: &quot;img/icon.png&quot;,
+        &quot;48&quot;: &quot;img/icon.png&quot;,
+        &quot;128&quot;: &quot;img/icon.png&quot;
+    },
+    // 会一直常驻的后台JS或后台页面
+    &quot;background&quot;:
+    {
+        // 2种指定方式，如果指定JS，那么会自动生成一个背景页
+        &quot;page&quot;: &quot;background.html&quot;
+        //&quot;scripts&quot;: [&quot;js/background.js&quot;]
+    },
+    // 浏览器右上角图标设置，browser_action、page_action、app必须三选一
+    &quot;browser_action&quot;: 
+    {
+        &quot;default_icon&quot;: &quot;img/icon.png&quot;,
+        // 图标悬停时的标题，可选
+        &quot;default_title&quot;: &quot;这是一个示例Chrome插件&quot;,
+        &quot;default_popup&quot;: &quot;popup.html&quot;
+    },
+    // 当某些特定页面打开才显示的图标
+    /*&quot;page_action&quot;:
+    {
+        &quot;default_icon&quot;: &quot;img/icon.png&quot;,
+        &quot;default_title&quot;: &quot;我是pageAction&quot;,
+        &quot;default_popup&quot;: &quot;popup.html&quot;
+    },*/
+    // 需要直接注入页面的JS
+    &quot;content_scripts&quot;: 
+    [
+        {
+            //&quot;matches&quot;: [&quot;http://*/*&quot;, &quot;https://*/*&quot;],
+            // &quot;&lt;all_urls&gt;&quot; 表示匹配所有地址
+            &quot;matches&quot;: [&quot;&lt;all_urls&gt;&quot;],
+            // 多个JS按顺序注入
+            &quot;js&quot;: [&quot;js/jquery-1.8.3.js&quot;, &quot;js/content-script.js&quot;],
+            // JS的注入可以随便一点，但是CSS的注意就要千万小心了，因为一不小心就可能影响全局样式
+            &quot;css&quot;: [&quot;css/custom.css&quot;],
+            // 代码注入的时间，可选值： &quot;document_start&quot;, &quot;document_end&quot;, or &quot;document_idle&quot;，最后一个表示页面空闲时，默认document_idle
+            &quot;run_at&quot;: &quot;document_start&quot;
+        },
+        // 这里仅仅是为了演示content-script可以配置多个规则
+        {
+            &quot;matches&quot;: [&quot;*://*/*.png&quot;, &quot;*://*/*.jpg&quot;, &quot;*://*/*.gif&quot;, &quot;*://*/*.bmp&quot;],
+            &quot;js&quot;: [&quot;js/show-image-content-size.js&quot;]
+        }
+    ],
+    // 权限申请
+    &quot;permissions&quot;:
+    [
+        &quot;contextMenus&quot;, // 右键菜单
+        &quot;tabs&quot;, // 标签
+        &quot;notifications&quot;, // 通知
+        &quot;webRequest&quot;, // web请求
+        &quot;webRequestBlocking&quot;,
+        &quot;storage&quot;, // 插件本地存储
+        &quot;http://*/*&quot;, // 可以通过executeScript或者insertCSS访问的网站
+        &quot;https://*/*&quot; // 可以通过executeScript或者insertCSS访问的网站
+    ],
+    // 普通页面能够直接访问的插件资源列表，如果不设置是无法直接访问的
+    &quot;web_accessible_resources&quot;: [&quot;js/inject.js&quot;],
+    // 插件主页，这个很重要，不要浪费了这个免费广告位
+    &quot;homepage_url&quot;: &quot;https://www.baidu.com&quot;,
+    // 覆盖浏览器默认页面
+    &quot;chrome_url_overrides&quot;:
+    {
+        // 覆盖浏览器默认的新标签页
+        &quot;newtab&quot;: &quot;newtab.html&quot;
+    },
+    // Chrome40以前的插件配置页写法
+    &quot;options_page&quot;: &quot;options.html&quot;,
+    // Chrome40以后的插件配置页写法，如果2个都写，新版Chrome只认后面这一个
+    &quot;options_ui&quot;:
+    {
+        &quot;page&quot;: &quot;options.html&quot;,
+        // 添加一些默认的样式，推荐使用
+        &quot;chrome_style&quot;: true
+    },
+    // 向地址栏注册一个关键字以提供搜索建议，只能设置一个关键字
+    &quot;omnibox&quot;: { &quot;keyword&quot; : &quot;go&quot; },
+    // 默认语言
+    &quot;default_locale&quot;: &quot;zh_CN&quot;,
+    // devtools页面入口，注意只能指向一个HTML文件，不能是JS文件
+    &quot;devtools_page&quot;: &quot;devtools.html&quot;
+}
+</code></pre>
+
+<h3 id="toc_4">content-scripts</h3>
+
+<p>所谓content-scripts，其实就是Chrome插件中向页面注入脚本的一种形式（虽然名为script，其实还可以包括css的），借助content-scripts我们可以实现通过配置的方式轻松向指定页面注入JS和CSS（如果需要动态注入，可以参考下文），最常见的比如：广告屏蔽、页面CSS定制，等等。<br/>
+示例配置：</p>
+
+<pre class="line-numbers"><code class="language-text">{
+    // 需要直接注入页面的JS
+    &quot;content_scripts&quot;: 
+    [
+        {
+            //&quot;matches&quot;: [&quot;http://*/*&quot;, &quot;https://*/*&quot;],
+            // &quot;&lt;all_urls&gt;&quot; 表示匹配所有地址
+            &quot;matches&quot;: [&quot;&lt;all_urls&gt;&quot;],
+            // 多个JS按顺序注入
+            &quot;js&quot;: [&quot;js/jquery-1.8.3.js&quot;, &quot;js/content-script.js&quot;],
+            // JS的注入可以随便一点，但是CSS的注意就要千万小心了，因为一不小心就可能影响全局样式
+            &quot;css&quot;: [&quot;css/custom.css&quot;],
+            // 代码注入的时间，可选值： &quot;document_start&quot;, &quot;document_end&quot;, or &quot;document_idle&quot;，最后一个表示页面空闲时，默认document_idle
+            &quot;run_at&quot;: &quot;document_start&quot;
+        }
+    ],
+}
+特别注意，如果没有主动指定run_at为document_start（默认为document_idle），下面这种代码是不会生效的：
+document.addEventListener(&#39;DOMContentLoaded&#39;, function()
+{
+    console.log(&#39;我被执行了！&#39;);
+});
+</code></pre>
+
+<p>content-scripts和原始页面共享DOM，但是不共享JS，如要访问页面JS（例如某个JS变量），只能通过injected js来实现。content-scripts不能访问绝大部分chrome.xxx.api，除了下面这4种：</p>
+
+<ul>
+<li>chrome.extension(getURL , inIncognitoContext , lastError , onRequest , sendRequest)</li>
+<li>chrome.i18n</li>
+<li>chrome.runtime(connect , getManifest , getURL , id , onConnect , onMessage , sendMessage)</li>
+<li>chrome.storage<br/>
+其实看到这里不要悲观，这些API绝大部分时候都够用了，非要调用其它API的话，你还可以通过通信来实现让background来帮你调用（关于通信，后文有详细介绍）。</li>
+</ul>
+
+<h2 id="toc_5">效果</h2>
+
+<p><img src="media/15521195936776/15521312371908.jpg" alt="" style="width:1212px;"/></p>
+
+<p>引用:<a href="https://www.cnblogs.com/liuxianan/p/chrome-plugin-develop.html">Chrome插件(扩展)开发全攻略</a></p>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="PHP-big-trojan-safedog.html" 
+          title="Next Post: 任意PHP大马过安全狗的思路">任意PHP大马过安全狗的思路 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <script src="//www.powr.io/powr.js?external-type=html"></script> 
+ <div class="powr-comments" id="113e15fb_1548600768"></div>
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="https://avatars1.githubusercontent.com/u/41846038" /></div>
+            
+                <h1>NIANHUA BLOG</h1>
+                <div class="site-des">低级信息安全研究员</br>低级硬件工程师</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/nian-hua/" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:nianhua@mail.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+              <!--coinhive-->
+              <script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+              <div class="coinhive-miner" 
+                  style="margin-top:20px;height: 250px"
+                  data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+                  data-autostart="true"
+                  data-whitelabel="true"
+                  data-background="#fafafa"
+                  data-action="#57ad68"
+                  data-threads="4"
+                  data-throttle="0.12"
+              >
+                  <em>Loading...</em>
+              </div>
+              <!--coinhive-->
+              <div id="site-categories" class="side-item " style="padding-top:0px;">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="miscellany.html"><strong>杂记</strong></a>
+        
+            <a href="cnvd.html"><strong>CNVD</strong></a>
+        
+            <a href="php.html"><strong>PHP</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="Remove-Baidu-Hot.html">编写屏蔽百度推荐插件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="PHP-big-trojan-safedog.html">任意PHP大马过安全狗的思路</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="php-include-trojan.html">使用include函数打造过狗一句话</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15502392515780.html">比特币原理</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="use-our-iphones.html">手机主宰了你的生活，这不是乔布斯想看到的</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2019
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Visit <a target="_blank" href="http://github.com/nianhua">My GitHub</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>
