@@ -1,0 +1,938 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  Burp API python 版第一部分 - NIANHUA BLOG
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="NIANHUA BLOG" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+<div class="coinhive-miner" 
+    style="height: 80px"
+    data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+    data-autostart="false"
+    data-whitelabel="true"
+    data-background="#000000"
+    data-text="#eeeeee"
+    data-action="#00ff00"
+    data-graph="#555555"
+    data-threads="4"
+    data-throttle="0.1">
+</div>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_blank" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; NIANHUA BLOG</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">Home</a></li>
+        
+        <li><a target="_blank" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="miscellany.html">杂记</a></li>
+        
+            <li><a href="cnvd.html">CNVD</a></li>
+        
+            <li><a href="php.html">PHP</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>Burp API python 版第一部分</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/3/10</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='miscellany.html'>杂记</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>Before we get into specifics for each language, there is some general context to bear in mind: Burp looks for a class called BurpExtender to instantiate (with no constructor parameters) and then calls registerExtenderCallbacks() on this object passing in a &ldquo;callbacks&rdquo; object. Think of this as the entrypoint for your extension, allowing you to tell Burp what your extension is capable of, and when Burp should ask your extension questions.<br/>
+<span id="more"></span><!-- more --></p>
+
+<ul>
+<li>
+<a href="#toc_0">接口IHttpListener</a>
+<ul>
+<li>
+<a href="#toc_1">一般定义</a>
+</li>
+<li>
+<a href="#toc_2">可选方法</a>
+</li>
+<li>
+<a href="#toc_3">方法细节</a>
+</li>
+<li>
+<a href="#toc_4">参数</a>
+</li>
+<li>
+<a href="#toc_5">举例</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">效果</a>
+</li>
+<li>
+<a href="#toc_7">接口 IProxyListener</a>
+<ul>
+<li>
+<a href="#toc_8">一般定义</a>
+</li>
+<li>
+<a href="#toc_9">可选方法</a>
+</li>
+<li>
+<a href="#toc_10">方法细节</a>
+</li>
+<li>
+<a href="#toc_11">参数</a>
+</li>
+<li>
+<a href="#toc_12">举例</a>
+</li>
+<li>
+<a href="#toc_13">效果</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_14">接口 IScannerListener</a>
+<ul>
+<li>
+<a href="#toc_15">一般定义</a>
+</li>
+<li>
+<a href="#toc_16">可选方法</a>
+</li>
+<li>
+<a href="#toc_17">方法细节</a>
+</li>
+<li>
+<a href="#toc_18">参数</a>
+</li>
+<li>
+<a href="#toc_19">举例</a>
+</li>
+<li>
+<a href="#toc_20">效果</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_21">接口 IExtensionStateListener</a>
+<ul>
+<li>
+<a href="#toc_22">一般定义</a>
+</li>
+<li>
+<a href="#toc_23">可选方法</a>
+</li>
+<li>
+<a href="#toc_24">方法细节</a>
+</li>
+<li>
+<a href="#toc_25">参数</a>
+</li>
+<li>
+<a href="#toc_26">举例</a>
+</li>
+<li>
+<a href="#toc_27">效果</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_28">接口 IHttpRequestResponse</a>
+<ul>
+<li>
+<a href="#toc_29">一般定义</a>
+</li>
+<li>
+<a href="#toc_30">可选方法</a>
+</li>
+<li>
+<a href="#toc_31">方法细节</a>
+<ul>
+<li>
+<a href="#toc_32">getRequest</a>
+</li>
+<li>
+<a href="#toc_33">setRequest</a>
+</li>
+<li>
+<a href="#toc_34">getResponse</a>
+</li>
+<li>
+<a href="#toc_35">setResponse</a>
+</li>
+<li>
+<a href="#toc_36">getComment</a>
+</li>
+<li>
+<a href="#toc_37">setComment</a>
+</li>
+<li>
+<a href="#toc_38">getHighlight</a>
+</li>
+<li>
+<a href="#toc_39">setHighlight</a>
+</li>
+<li>
+<a href="#toc_40">getHttpService</a>
+</li>
+<li>
+<a href="#toc_41">setHttpService</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_42">举例</a>
+</li>
+<li>
+<a href="#toc_43">效果</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_44">接口 IHttpService</a>
+<ul>
+<li>
+<a href="#toc_45">一般定义</a>
+</li>
+<li>
+<a href="#toc_46">可选方法</a>
+</li>
+<li>
+<a href="#toc_47">方法细节</a>
+<ul>
+<li>
+<a href="#toc_48">getHost</a>
+</li>
+<li>
+<a href="#toc_49">getPort</a>
+</li>
+<li>
+<a href="#toc_50">getProtocol</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="toc_0">接口IHttpListener</h2>
+
+<h3 id="toc_1">一般定义</h3>
+
+<pre class="line-numbers"><code class="language-java">public interface IHttpListener
+</code></pre>
+
+<p>利用扩展实现此接口，然后调用IBurpExtenderCallbacks.RegisterHttpListener（）注册HTTP监听器。任何Burp工具发出的请求和响应都会通知监听器。</p>
+
+<h3 id="toc_2">可选方法</h3>
+
+<p><img src="media/15522026314723/15522028797214.jpg" alt="" style="width:1020px;"/><br/>
+<em>注释:当即将发出HTTP请求或接收到HTTP响应时，将调用此方法。</em></p>
+
+<h3 id="toc_3">方法细节</h3>
+
+<pre class="line-numbers"><code class="language-java">void processHttpMessage(int toolFlag,
+                      boolean messageIsRequest,
+                      IHttpRequestResponse messageInfo)
+</code></pre>
+
+<h3 id="toc_4">参数</h3>
+
+<pre class="line-numbers"><code class="language-text">toolFlag:指示发出请求的burp工具的标志。BURP工具标志在IBurpExtenderCallbacks接口中定义。
+messageIsRequest:指示HTTP消息是请求还是响应。
+messageInfo:要处理的请求/响应的详细信息。扩展可以调用此对象上的setter方法来更新当前消息，从而修改burp的行为。
+</code></pre>
+
+<h3 id="toc_5">举例</h3>
+
+<pre class="line-numbers"><code class="language-python">from burp import IBurpExtender
+from burp import IHttpListener
+from java.io import PrintWriter
+
+class BurpExtender(IBurpExtender, IHttpListener):
+    
+    #
+    # 实现 IBurpExtender
+    #
+    
+    def registerExtenderCallbacks(self, callbacks):
+        
+        # 保留对回调对象的引用
+        self._callbacks = callbacks
+        
+        # 设置扩展名
+        callbacks.setExtensionName(&quot;Nianhua HttpListener&quot;)
+        
+        # 获取我们的输出流
+        self._stdout = PrintWriter(callbacks.getStdout(), True)
+
+        # 将自己注册为HTTP监听器
+        callbacks.registerHttpListener(self)
+    
+    #
+    # 实现 IHttpListener
+    #
+
+    def processHttpMessage(self, toolFlag, messageIsRequest, messageInfo):
+        self._stdout.println(
+                (&quot;HTTP request to &quot; if messageIsRequest else &quot;HTTP response from &quot;) +
+                messageInfo.getHttpService().toString() +
+                &quot; [&quot; + self._callbacks.getToolName(toolFlag) + &quot;]&quot;)
+</code></pre>
+
+<h2 id="toc_6">效果</h2>
+
+<p><img src="media/15522026314723/15522048235468.jpg" alt="" style="width:1247px;"/></p>
+
+<h2 id="toc_7">接口 IProxyListener</h2>
+
+<h3 id="toc_8">一般定义</h3>
+
+<pre class="line-numbers"><code class="language-java">public interface IProxyListener
+</code></pre>
+
+<p>扩展可以实现此接口，然后调用IBurpExtenderCallbacks.RegisterProxyListener（）注册代理监听器。代理工具将通知监听器正在处理的请求和响应。扩展可以通过注册代理监听器来执行这些消息的自定义分析或修改，并在UI消息拦截中进行控制。</p>
+
+<h3 id="toc_9">可选方法</h3>
+
+<p><img src="media/15522026314723/15522060393749.jpg" alt="" style="width:1020px;"/><br/>
+<em>注释:当代理正在处理HTTP消息时，将调用此方法。</em></p>
+
+<h3 id="toc_10">方法细节</h3>
+
+<pre class="line-numbers"><code class="language-java">void processProxyMessage(boolean messageIsRequest,
+                       IInterceptedProxyMessage message)
+</code></pre>
+
+<h3 id="toc_11">参数</h3>
+
+<pre class="line-numbers"><code class="language-text">messageIsRequest: 指示HTTP消息是请求还是响应。  
+message:扩展可用于查询和更新消息详细信息的IInterceptedProxyMessage对象，并控制是否应截取消息并将其显示给用户以供手动审阅或修改。
+</code></pre>
+
+<h3 id="toc_12">举例</h3>
+
+<pre class="line-numbers"><code class="language-python">from burp import IBurpExtender
+from burp import IProxyListener
+from java.io import PrintWriter
+
+class BurpExtender(IBurpExtender, IProxyListener):
+    
+    #
+    # 实现 IBurpExtender
+    #
+    
+    def registerExtenderCallbacks(self, callbacks):
+        # 保留对回调对象的引用
+        self._callbacks = callbacks
+        
+        # 设置扩展名
+        callbacks.setExtensionName(&quot;Event listeners&quot;)
+        
+        # 获取我们的输出流
+        self._stdout = PrintWriter(callbacks.getStdout(), True)
+        
+        # 将自己注册为代理监听器
+        callbacks.registerProxyListener(self)
+        
+
+    #
+    # 实现 IProxyListener
+    #
+
+    def processProxyMessage(self, messageIsRequest, message):
+        self._stdout.println(
+                (&quot;Proxy request to &quot; if messageIsRequest else &quot;Proxy response from &quot;) +
+                message.getMessageInfo().getHttpService().toString())
+</code></pre>
+
+<h3 id="toc_13">效果</h3>
+
+<p><img src="media/15522026314723/15522067155964.jpg" alt="" style="width:1245px;"/></p>
+
+<h2 id="toc_14">接口 IScannerListener</h2>
+
+<h3 id="toc_15">一般定义</h3>
+
+<pre class="line-numbers"><code class="language-java">public interface IScannerListener
+</code></pre>
+
+<p>扩展可以实现此接口，然后调用IBurpExtenderCallbacks.registerScannerListener（）来注册Scanner侦听器。 将通知侦听器扫描程序工具报告的新问题。 扩展可以通过注册Scanner侦听器来执行自定义分析或记录扫描程序问题。</p>
+
+<h3 id="toc_16">可选方法</h3>
+
+<p><img src="media/15522026314723/15522081518778.jpg" alt="" style="width:1020px;"/><br/>
+<em>注释:将新问题添加到Burp Scanner的结果时，将调用此方法。</em></p>
+
+<h3 id="toc_17">方法细节</h3>
+
+<pre class="line-numbers"><code class="language-java">void newScanIssue(IScanIssue issue)
+</code></pre>
+
+<h3 id="toc_18">参数</h3>
+
+<pre class="line-numbers"><code class="language-text">issue:扩展可以查询的IScanIssue对象，以获取有关新问题的详细信息。
+</code></pre>
+
+<h3 id="toc_19">举例</h3>
+
+<pre class="line-numbers"><code class="language-python">from burp import IBurpExtender
+from burp import IScannerListener
+from java.io import PrintWriter
+
+class BurpExtender(IBurpExtender, IScannerListener,):
+    
+    #
+    # 实现 IBurpExtender
+    #
+    
+    def registerExtenderCallbacks(self, callbacks):
+        # 保留对回调对象的引用
+        self._callbacks = callbacks
+        
+        # 设置扩展名
+        callbacks.setExtensionName(&quot;Event listeners&quot;)
+        
+        # 获取我们的输出流
+        self._stdout = PrintWriter(callbacks.getStdout(), True)
+
+        # 将自己注册为扫描仪监听器
+        callbacks.registerScannerListener(self)
+
+    #
+    # 实现 IScannerListener
+    #
+
+    def newScanIssue(self, issue):
+        self._stdout.println(&quot;New scan issue: &quot; + issue.getIssueName())
+</code></pre>
+
+<h3 id="toc_20">效果</h3>
+
+<p><img src="media/15522026314723/15522086825014.jpg" alt="" style="width:1251px;"/></p>
+
+<h2 id="toc_21">接口 IExtensionStateListener</h2>
+
+<h3 id="toc_22">一般定义</h3>
+
+<pre class="line-numbers"><code class="language-java">public interface IExtensionStateListener
+</code></pre>
+
+<p>扩展可以实现此接口，然后调用IBurpExtenderCallbacks.registerExtensionStateListener（）来注册扩展状态侦听器。 收件人将收到有关扩展程序状态更改的通知。 注意：启动后台线程或打开系统资源（例如文件或数据库连接）的任何扩展都应注册侦听器，并在卸载扩展时终止线程/关闭资源。</p>
+
+<h3 id="toc_23">可选方法</h3>
+
+<p><img src="media/15522026314723/15522091227916.jpg" alt="" style="width:1022px;"/><br/>
+卸载扩展时调用此方法。</p>
+
+<h3 id="toc_24">方法细节</h3>
+
+<pre class="line-numbers"><code class="language-java">void extensionUnloaded()
+</code></pre>
+
+<h3 id="toc_25">参数</h3>
+
+<p>None</p>
+
+<h3 id="toc_26">举例</h3>
+
+<pre class="line-numbers"><code class="language-python">from burp import IBurpExtender
+from burp import IExtensionStateListener
+from java.io import PrintWriter
+
+class BurpExtender(IBurpExtender,  IExtensionStateListener):
+    
+    #
+    # 实现 IBurpExtender
+    #
+    
+    def registerExtenderCallbacks(self, callbacks):
+        # 保留对回调对象的引用
+        self._callbacks = callbacks
+        
+        # 设置扩展名
+        callbacks.setExtensionName(&quot;Event listeners&quot;)
+        
+        # 获取我们的输出流
+        self._stdout = PrintWriter(callbacks.getStdout(), True)
+        
+        # 将自己注册为扩展状态侦听器
+        callbacks.registerExtensionStateListener(self)
+    
+
+    #
+    # 实现 IExtensionStateListener
+    #
+
+    def extensionUnloaded(self):
+        self._stdout.println(&quot;Extension was unloaded&quot;)
+</code></pre>
+
+<h3 id="toc_27">效果</h3>
+
+<p><img src="media/15522026314723/15522092577155.jpg" alt="" style="width:1257px;"/></p>
+
+<h2 id="toc_28">接口 IHttpRequestResponse</h2>
+
+<h3 id="toc_29">一般定义</h3>
+
+<pre class="line-numbers"><code class="language-java">public interface IHttpRequestResponse
+</code></pre>
+
+<p>此接口用于检索和更新有关HTTP消息的详细信息。 注意：setter方法通常只能在处理消息之前使用，而不能在只读上下文中使用。 与响应详细信息相关的getter方法只能在请求发出后使用。</p>
+
+<h3 id="toc_30">可选方法</h3>
+
+<p><img src="media/15522026314723/15522121771615.jpg" alt="" style="width:1019px;"/></p>
+
+<h3 id="toc_31">方法细节</h3>
+
+<h4 id="toc_32">getRequest</h4>
+
+<pre class="line-numbers"><code class="language-java">byte[] getRequest()
+此方法用于检索请求消息。
+返回:请求消息。
+</code></pre>
+
+<h4 id="toc_33">setRequest</h4>
+
+<pre class="line-numbers"><code class="language-java">void setRequest(byte[] message)
+此方法用于更新请求消息。
+参数:message  - 新请求消息。
+</code></pre>
+
+<h4 id="toc_34">getResponse</h4>
+
+<pre class="line-numbers"><code class="language-java">byte[] getResponse()
+此方法用于检索响应消息。
+返回:响应消息。
+</code></pre>
+
+<h4 id="toc_35">setResponse</h4>
+
+<pre class="line-numbers"><code class="language-java">void setResponse(byte[] message)
+此方法用于更新响应消息。
+参数:message  - 新的响应消息。
+</code></pre>
+
+<h4 id="toc_36">getComment</h4>
+
+<pre class="line-numbers"><code class="language-java">java.lang.String getComment()
+如果适用，此方法用于检索此项的用户注释。
+返回:此项目的用户注释，如果未设置，则为null。
+</code></pre>
+
+<h4 id="toc_37">setComment</h4>
+
+<pre class="line-numbers"><code class="language-java">void setComment(java.lang.String comment)
+这个方法用于更新此项的用户注释。
+参数:comment  - 要分配给此项目的注释。
+</code></pre>
+
+<h4 id="toc_38">getHighlight</h4>
+
+<pre class="line-numbers"><code class="language-java">java.lang.String getHighlight()
+如果适用，此方法用于检索此项目的用户注释突出显示。
+返回:此项目的用户注释突出显示，如果未设置，则为null。
+</code></pre>
+
+<h4 id="toc_39">setHighlight</h4>
+
+<pre class="line-numbers"><code class="language-java">void setHighlight(java.lang.String color)
+此方法用于更新此项目的用户注释突出显示。
+参数:color  - 要分配给此项目的高亮颜色。 可接受的值包括：red, orange, yellow, green, cyan, blue, pink, magenta, gray,或null:以清除任何现有的颜色。
+</code></pre>
+
+<h4 id="toc_40">getHttpService</h4>
+
+<pre class="line-numbers"><code class="language-java">IHttpService getHttpService()
+此方法用于检索此请求/响应的HTTP服务。
+返回：包含HTTP服务详细信息的IHttpService对象。
+</code></pre>
+
+<h4 id="toc_41">setHttpService</h4>
+
+<pre class="line-numbers"><code class="language-java">void setHttpService(IHttpService httpService)
+此方法用于更新此请求/响应的HTTP服务。
+参数：httpService  - 包含新HTTP服务详细信息的IHttpService对象。
+</code></pre>
+
+<h3 id="toc_42">举例</h3>
+
+<pre class="line-numbers"><code class="language-python">from burp import IBurpExtender
+from burp import IHttpListener
+
+
+HOST_FROM = &quot;www.ip138.com&quot;
+HOST_TO = &quot;www.ip38.com&quot;
+
+class BurpExtender(IBurpExtender, IHttpListener):
+
+    #
+    # 实现 IBurpExtender
+    #
+    
+    def registerExtenderCallbacks(self, callbacks):
+        # 获取扩展助手对象
+        self._helpers = callbacks.getHelpers()
+        
+        # 设置扩展名
+        callbacks.setExtensionName(&quot;Traffic redirector&quot;)
+        
+        # 将自己注册为HTTP监听器
+        callbacks.registerHttpListener(self)
+
+
+    #
+    # 实现 IHttpListener
+    #
+    
+    def processHttpMessage(self, toolFlag, messageIsRequest, messageInfo):
+        # 只处理请求
+        if not messageIsRequest:
+            return
+
+        # 获取请求的HTTP服务
+        httpService = messageInfo.getHttpService()
+        
+        # 如果主机是HOST_FROM，请将其更改为HOST_TO
+        if (HOST_FROM == httpService.getHost()):
+            messageInfo.setHttpService(self._helpers.buildHttpService(HOST_TO,
+                httpService.getPort(), httpService.getProtocol()))
+</code></pre>
+
+<h3 id="toc_43">效果</h3>
+
+<p><img src="media/15522026314723/15522242790566.jpg" alt="" style="width:777px;"/><br/>
+这个效果没办法，因为在这个IP上找不到对应的站点。</p>
+
+<h2 id="toc_44">接口 IHttpService</h2>
+
+<h3 id="toc_45">一般定义</h3>
+
+<pre class="line-numbers"><code class="language-java">public interface IHttpService
+</code></pre>
+
+<p>此接口用于提供有关HTTP服务的详细信息，可以向其发送HTTP请求。</p>
+
+<h3 id="toc_46">可选方法</h3>
+
+<p><img src="media/15522026314723/15522252402949.jpg" alt="" style="width:1287px;"/></p>
+
+<h3 id="toc_47">方法细节</h3>
+
+<h4 id="toc_48">getHost</h4>
+
+<pre class="line-numbers"><code class="language-java">java.lang.String getHost()
+此方法返回服务的主机名或IP地址。
+返回：服务的主机名或IP地址。
+</code></pre>
+
+<h4 id="toc_49">getPort</h4>
+
+<pre class="line-numbers"><code class="language-java">int getPort()
+此方法返回服务的端口号。
+返回：服务的端口号。
+</code></pre>
+
+<h4 id="toc_50">getProtocol</h4>
+
+<pre class="line-numbers"><code class="language-java">java.lang.String getProtocol()
+此方法返回服务的协议。
+返回：服务的协议。 预期值为“http”或“https”。
+</code></pre>
+
+<blockquote>
+<p><a href="https://portswigger.net/burp/">https://portswigger.net/burp/</a><br/>
+<a href="https://portswigger.net/burp/extender/api/">https://portswigger.net/burp/extender/api/</a><br/>
+<a href="http://www.anquan.us/static/drops/tools-14040.html">http://www.anquan.us/static/drops/tools-14040.html</a></p>
+</blockquote>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="Remove-Baidu-Hot.html" 
+          title="Next Post: 编写屏蔽百度推荐插件">编写屏蔽百度推荐插件 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <script src="//www.powr.io/powr.js?external-type=html"></script> 
+ <div class="powr-comments" id="113e15fb_1548600768"></div>
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="https://avatars1.githubusercontent.com/u/41846038" /></div>
+            
+                <h1>NIANHUA BLOG</h1>
+                <div class="site-des">低级信息安全研究员</br>低级硬件工程师</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/nian-hua/" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:nianhua@mail.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+              <!--coinhive-->
+              <script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+              <div class="coinhive-miner" 
+                  style="margin-top:20px;height: 250px"
+                  data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+                  data-autostart="true"
+                  data-whitelabel="true"
+                  data-background="#fafafa"
+                  data-action="#57ad68"
+                  data-threads="4"
+                  data-throttle="0.12"
+              >
+                  <em>Loading...</em>
+              </div>
+              <!--coinhive-->
+              <div id="site-categories" class="side-item " style="padding-top:0px;">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="miscellany.html"><strong>杂记</strong></a>
+        
+            <a href="cnvd.html"><strong>CNVD</strong></a>
+        
+            <a href="php.html"><strong>PHP</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15522026314723.html">Burp API python 版第一部分</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="Remove-Baidu-Hot.html">编写屏蔽百度推荐插件</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="PHP-big-trojan-safedog.html">任意PHP大马过安全狗的思路</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="php-include-trojan.html">使用include函数打造过狗一句话</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15502392515780.html">比特币原理</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2019
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Visit <a target="_blank" href="http://github.com/nianhua">My GitHub</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>
