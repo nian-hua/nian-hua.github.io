@@ -137,7 +137,7 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>Before we get into specifics for each language, there is some general context to bear in mind: Burp looks for a class called BurpExtender to instantiate (with no constructor parameters) and then calls registerExtenderCallbacks() on this object passing in a &ldquo;callbacks&rdquo; object. Think of this as the entrypoint for your extension, allowing you to tell Burp what your extension is capable of, and when Burp should ask your extension questions.<br/>
+      <p>在我们讨论每种语言的细节之前，需要记住一些常规上下文：Burp查找一个名为BurpExtender的类来实例化（没有构造函数参数），然后在此对象上调用registerExtenderCallbacks（）并传入一个“callbacks”对象。 将此视为您的扩展的入口点，允许您告诉Burp您的扩展程序的功能，以及Burp何时应该询问您的扩展程序问题。<br/>
 <span id="more"></span><!-- more --></p>
 
 <ul>
@@ -305,6 +305,62 @@
 </li>
 <li>
 <a href="#toc_50">getProtocol</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_51">接口 ISessionHandlingAction</a>
+<ul>
+<li>
+<a href="#toc_52">一般定义</a>
+</li>
+<li>
+<a href="#toc_53">可选方法</a>
+</li>
+<li>
+<a href="#toc_54">方法细节</a>
+<ul>
+<li>
+<a href="#toc_55">getActionName</a>
+</li>
+<li>
+<a href="#toc_56">performAction</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_57">接口 IResponseInfo</a>
+<ul>
+<li>
+<a href="#toc_58">一般定义</a>
+</li>
+<li>
+<a href="#toc_59">可选方法</a>
+</li>
+<li>
+<a href="#toc_60">方法细节</a>
+<ul>
+<li>
+<a href="#toc_61">getHeaders</a>
+</li>
+<li>
+<a href="#toc_62">getBodyOffset</a>
+</li>
+<li>
+<a href="#toc_63">getStatusCode</a>
+</li>
+<li>
+<a href="#toc_64">getCookies</a>
+</li>
+<li>
+<a href="#toc_65">getStatedMimeType</a>
+</li>
+<li>
+<a href="#toc_66">getInferredMimeType</a>
 </li>
 </ul>
 </li>
@@ -740,6 +796,95 @@ class BurpExtender(IBurpExtender, IHttpListener):
 返回：服务的协议。 预期值为“http”或“https”。
 </code></pre>
 
+<h2 id="toc_51">接口 ISessionHandlingAction</h2>
+
+<h3 id="toc_52">一般定义</h3>
+
+<pre class="line-numbers"><code class="language-java">public interface ISessionHandlingAction
+</code></pre>
+
+<p>扩展可以实现此接口，然后调用IBurpExtenderCallbacks.registerSessionHandlingAction（）来注册自定义会话处理操作。 每个注册的操作都将在会话处理规则UI中可用，以供用户选择作为规则操作。 用户可以选择直接调用操作，也可以执行宏。</p>
+
+<h3 id="toc_53">可选方法</h3>
+
+<p><img src="media/15522026314723/15522904816331.jpg" alt="" style="width:1020px;"/></p>
+
+<h3 id="toc_54">方法细节</h3>
+
+<h4 id="toc_55">getActionName</h4>
+
+<pre class="line-numbers"><code class="language-java">java.lang.String getActionName()
+Burp使用此方法来获取会话处理操作的名称。 当用户选择执行扩展提供的操作时，这将在会话处理规则编辑器中显示为选项。
+返回：行动的名称。
+</code></pre>
+
+<h4 id="toc_56">performAction</h4>
+
+<pre class="line-numbers"><code class="language-java">void performAction(IHttpRequestResponse currentRequest,
+                 IHttpRequestResponse[] macroItems)
+应该执行会话处理操作时调用此方法。 这可以作为一个动作本身发生，也可以作为执行宏之后的子动作发生。
+参数：
+currentRequest  - 当前正在处理的基本请求。 该操作可以查询此对象以获取有关基本请求的详细信息。 如有必要，它可以发出自己的其他请求，并可以使用此对象上的setter方法更新基本请求。
+macroItems  - 如果在执行宏之后调用该操作，则此参数包含执行宏的结果。 否则，它为null。 操作可以使用宏项的详细信息来执行宏的自定义分析，以获得非标准会话处理令牌的值等。
+</code></pre>
+
+<h2 id="toc_57">接口 IResponseInfo</h2>
+
+<h3 id="toc_58">一般定义</h3>
+
+<pre class="line-numbers"><code class="language-java">public interface IResponseInfo
+</code></pre>
+
+<p>此接口用于检索有关HTTP响应的关键详细信息。 扩展可以通过调用IExtensionHelpers.analyzeResponse（）获取给定响应的IResponseInfo对象。</p>
+
+<h3 id="toc_59">可选方法</h3>
+
+<p><img src="media/15522026314723/15522993833910.jpg" alt="" style="width:1023px;"/></p>
+
+<h3 id="toc_60">方法细节</h3>
+
+<h4 id="toc_61">getHeaders</h4>
+
+<pre class="line-numbers"><code class="language-java">java.util.List&lt;java.lang.String&gt; getHeaders()
+此方法用于获取响应中包含的HTTP包头。
+返回：响应中包含的HTTP包头。
+</code></pre>
+
+<h4 id="toc_62">getBodyOffset</h4>
+
+<pre class="line-numbers"><code class="language-java">int getBodyOffset()
+此方法用于获取消息正文开始的响应中的偏移量。
+返回：消息正文开始的响应中的偏移量。
+</code></pre>
+
+<h4 id="toc_63">getStatusCode</h4>
+
+<pre class="line-numbers"><code class="language-java">short getStatusCode()
+此方法用于获取响应中包含的HTTP状态代码。
+返回：响应中包含的HTTP状态代码。
+</code></pre>
+
+<h4 id="toc_64">getCookies</h4>
+
+<pre class="line-numbers"><code class="language-java">java.util.List&lt;ICookie&gt; getCookies()
+此方法用于获取响应中设置的HTTP cookie的详细信息。
+返回：表示响应中设置的cookie的ICookie对象列表（如果有）。
+</code></pre>
+
+<h4 id="toc_65">getStatedMimeType</h4>
+
+<pre class="line-numbers"><code class="language-java">java.lang.String getStatedMimeType()
+此方法用于获取响应的MIME类型，如HTTP标头中所述。
+返回：所述MIME类型的文本标签，如果未知或未识别，则为空字符串。 可能的标签与主Burp UI中使用的标签相同。
+</code></pre>
+
+<h4 id="toc_66">getInferredMimeType</h4>
+
+<pre class="line-numbers"><code class="language-java">java.lang.String getInferredMimeType()
+此方法用于获取响应的MIME类型，这是从HTTP消息正文的内容推断出来的。
+返回：推断的MIME类型的文本标签，如果未知或识别，则为空字符串。 可能的标签与主Burp UI中使用的标签相同。
+</code></pre>
+
 <blockquote>
 <p><a href="https://portswigger.net/burp/">https://portswigger.net/burp/</a><br/>
 <a href="https://portswigger.net/burp/extender/api/">https://portswigger.net/burp/extender/api/</a><br/>
@@ -754,6 +899,9 @@ class BurpExtender(IBurpExtender, IHttpListener):
       <div class="row">
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="Burp-Extender-Information.html" 
+          title="Previous Post: Burp插件 - 自动标记敏感信息">&laquo; Burp插件 - 自动标记敏感信息</a>
       
         </p>
         </div>
@@ -853,6 +1001,12 @@ class BurpExtender(IBurpExtender, IHttpListener):
 	      
 		      
 			      <li class="post">
+			        <a href="Burp-Extender-Information.html">Burp插件 - 自动标记敏感信息</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
 			        <a href="15522026314723.html">Burp API python 版第一部分</a>
 			      </li>
 		     
@@ -876,10 +1030,6 @@ class BurpExtender(IBurpExtender, IHttpListener):
 		     
 		  
 		      
-			      <li class="post">
-			        <a href="15502392515780.html">比特币原理</a>
-			      </li>
-		     
 		  
 		      
 		  

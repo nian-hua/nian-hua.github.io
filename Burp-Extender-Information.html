@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  Apache虚拟主机的配置 - NIANHUA BLOG
+  Burp插件 - 自动标记敏感信息 - NIANHUA BLOG
   
   </title>
   
@@ -117,14 +117,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>Apache虚拟主机的配置</h1>
+          <h1>Burp插件 - 自动标记敏感信息</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2019/1/30</span>
+          <span class="date">2019/3/16</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='php.html'>PHP</a></span>
+              <span class="posted-in"><a href='miscellany.html'>杂记</a></span>
            
          
           <span class="comments">
@@ -137,86 +137,42 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>主要总结Apache的工作原理、常用的httpd命令以及使用Apache搭建虚拟主机的方法。</p>
+      <p>经常在测试网站的时候存在敏感信息泄漏，但是有的时候我们往往容易忽略一些数据包，导致我们与赏金失之交臂。于是我编写了这个插件，可以自动识别地理位置信息、手机号、身份证号，并将数据包使用不同的颜色进行标记。<br/>
+<span id="more"></span><!-- more --></p>
 
-<span id="more"></span><!-- more -->
+<h2 id="toc_0">配置Jython环境</h2>
 
-<ul>
-<li>
-<a href="#toc_0">Apache工作原理</a>
-</li>
-<li>
-<a href="#toc_1">httpd命令</a>
-</li>
-<li>
-<a href="#toc_2">分布式部署</a>
-</li>
-</ul>
+<p>首先去<a href="https://www.jython.org/downloads.html">Jython官网</a>下载安装文件<br/>
+<img src="media/15519235322648/15519238846960.jpg" alt="" style="width:1062px;"/><br/>
+安装过程一直点下一步就好啦，不过要记住这个安装位置：<br/>
+<img src="media/15519235322648/15519245914393.jpg" alt="" style="width:723px;"/><br/>
+安装成功后打开Burp的扩展：<br/>
+<img src="media/15519235322648/15519262739161.jpg" alt="" style="width:1029px;"/><br/>
+选择刚刚记住安装路径下的jython.jar<br/>
+<img src="media/15527141257239/15527146620250.jpg" alt="" style="width:1147px;"/><br/>
+加载我们刚编写的扩展。</p>
 
+<h2 id="toc_1">扩展的使用</h2>
 
-<h2 id="toc_0">Apache工作原理</h2>
+<p>查看Proxy History：<br/>
+<img src="media/15527141257239/15527149638845.jpg" alt="" style="width:1259px;"/><br/>
+如果返回的数据包中有身份证信息会被标记成红色<br/>
+<img src="media/15527141257239/15527150788767.jpg" alt="" style="width:1259px;"/><br/>
+如果返回的数据包中含有手机号信息会被标记成蓝色<br/>
+<img src="media/15527141257239/15527151471206.jpg" alt="" style="width:1260px;"/><br/>
+如果返回的数据包中含有GPS位置信息会被标记成绿色<br/>
+<img src="media/15527141257239/15527151922710.jpg" alt="" style="width:1262px;"/><br/>
+在Burp 扩展的output窗口，会详细输出匹配到的敏感信息，方便以后查询。<br/>
+<img src="media/15527141257239/15527159454831.jpg" alt="" style="width:489px;"/><br/>
+这个Json Decoder的功能是在<a href="https://github.com/PortSwigger/json-decoder/blob/master/JSONDecoder.py">GitHub</a>上一个开源功能，但是它并不支持修改解析后的数据，所以我修改了一下之后将它加入到了我的程序里，<br/>
+<img src="media/15527141257239/15527161693843.jpg" alt="" style="width:964px;"/></p>
 
-<p>首先看一下Apache的工作目录：<br/>
-<img src="media/15488255659164/15488257609049.jpg" alt="" class="mw_img_center" style="width:881px;display: block; clear:both; margin: 0 auto;"/><br/>
-看一下Apache的工作机制：<br/>
-<img src="media/15488255659164/D88E97E6-DFFB-4D46-941A-DF55992A3764.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+<h2 id="toc_2">后记</h2>
 
-<p><strong>Apache 本身没有功能，他的功能是通过加载模块实现的，具体加载哪些是由conf控制的。</strong><br/>
-接下来看一下Apache 启动过程：<br/>
-<img src="media/15488255659164/3974E7D3-5899-493E-BF13-C4F27FC193F9.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+<p>如果你觉得还有什么应该标记的话，可以在下方留言哦，如果你有什么建议或意见欢迎访问我的<a href="nianhua.in">个人博客</a>。</p>
 
-<h2 id="toc_1">httpd命令</h2>
-
-<p><code>httpd -k start</code></p>
-
-<p><code>httpd -v</code></p>
-
-<p><code>httpd -t</code> 检查Apache的配置是否正确<br/>
-<img src="media/15488255659164/15488260120096.jpg" alt="" class="mw_img_center" style="width:647px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p><code>httpd -M</code>查看加载了哪些模块<br/>
-<img src="media/15488255659164/E4DEFE33-AD38-41AC-BB4A-826D24C703D6.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>Apache 列目录：<br/>
-<img src="media/15488255659164/66F9DBDA-2909-4AD5-820A-153C2867A3DA.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
-<img src="media/15488255659164/15488282533150.jpg" alt="" class="mw_img_center" style="width:450px;display: block; clear:both; margin: 0 auto;"/></p>
-
-<p>默认首页设置：<br/>
-<img src="media/15488255659164/BB64A292-CDE8-41BC-884C-3CDD2A4DEA6D.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
-
-<h2 id="toc_2">分布式部署</h2>
-
-<p>一个Apache 支撑多个虚拟机主机，如果httpd.conf和php.ini发生了变化，则所有的虚拟主机的配置都发生了变化，如何实现不同虚拟主机有不同的配置。<br/>
-<img src="media/15488255659164/7D878D54-01E2-44AB-B579-133398CA7E11.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
-.htaccess 文件又称为分布式部署文件，这个文件可以覆盖httpd.conf文件中的配置。一个网站下可以有多个分布式部署文件。 </p>
-
-<p>每个.htaccess文件只能作用于当前目录和子目录 </p>
-
-<p><strong>分布式部署特点：</strong></p>
-
-<ol>
-<li>Apache 配置文件由主配置文件和分布式配置文件组成。</li>
-<li>主配置文件修改后需要重启服务器，分布式配置文件修改后不需要重启服务器</li>
-<li>创建分部署不受文件必须借助于编辑器。</li>
-<li>分布式部署会降低Apache的性能。</li>
-</ol>
-
-<p>分布式部署文件没有覆盖掉主配置文件，的原因在这里：<br/>
-<img src="media/15488255659164/7360ACC1-5818-48BD-9676-8CAA6E355104.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
-<img src="media/15488255659164/731E819D-5749-45A7-8B5E-E48511B5D25E.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
-<strong>分布式部署：允许分布式部署配置文件覆盖主配置文件。</strong></p>
-
-<p>通过分布式部署文件更改PHP配置</p>
-
-<p>通过 php_value 和 php_flag 来更改 PHP 配置的值。（注意，这两个指令属于Apache的指令）</p>
-
-<p>所有的PHP配置有两种，一种是开关性质，另一种是数值性质</p>
-
-<p>Php_flag  用来更改开关性质的</p>
-
-<p>Php_value 用来更改数值性质的</p>
-
-<p>ini_get() 获取PHP的值。</p>
+<p>下载地址在<br/>
+<a href="https://github.com/nian-hua/BurpExtender/blob/master/IntelligentAnalysis.py">https://github.com/nian-hua/BurpExtender/blob/master/IntelligentAnalysis.py</a></p>
 
 
     
@@ -227,16 +183,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="use-our-iphones.html" 
-          title="Previous Post: 手机主宰了你的生活，这不是乔布斯想看到的">&laquo; 手机主宰了你的生活，这不是乔布斯想看到的</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="livere-stored-cross-site-scripting.html" 
-          title="Next Post: 来必力评论插件存储XSS">来必力评论插件存储XSS &raquo;</a>
+          <a  href="15522026314723.html" 
+          title="Next Post: Burp API python 版第一部分">Burp API python 版第一部分 &raquo;</a>
       
       </p>
         </div>
