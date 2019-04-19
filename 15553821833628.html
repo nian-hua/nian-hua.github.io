@@ -137,23 +137,21 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <h3 id="toc_0">前言</h3>
-
-<p>这篇文章是关于一些客户端漏洞导致了阿里巴巴在多个网站上的账户被接管。 <br/>
+      <p>这篇文章是关于一些客户端漏洞导致了阿里巴巴在多个网站上的账户被接管。 <br/>
 <img src="media/15553821833628/1049983-20190415123019778-1229982636.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
 
 <span id="more"></span><!-- more -->
 
-<h3 id="toc_1">让我们开始</h3>
+<h3 id="toc_0">让我们开始</h3>
 
 <p><img src="media/15553821833628/15553824731164.jpg" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
 我将介绍一些必要条件，例如JSONP，一些浏览器处理cookies的行为等等</p>
 
-<h3 id="toc_2">攻击</h3>
+<h3 id="toc_1">攻击</h3>
 
 <p>大多数阿里巴巴的网站加载并执行外部的javascript对象，javascript代码从名为UID的cookie中获取一个值。更多尝试表示，攻击者可以假冒受害者将UID的值更改为payload，从而导致帐户被接管。</p>
 
-<h3 id="toc_3">漏洞发现的简要步骤如下：</h3>
+<h3 id="toc_2">漏洞发现的简要步骤如下：</h3>
 
 <ol>
 <li>找到一个url（ynuf.alipay.com），返回一个可以在很多阿里巴巴网站上执行的javascript代码。</li>
@@ -167,7 +165,7 @@
 <li>在最新版本的谷歌浏览器和Firefox浏览器都对其进行了测试。并在文末附上示范POC。</li>
 </ol>
 
-<h3 id="toc_4">什么是JSONP？</h3>
+<h3 id="toc_3">什么是JSONP？</h3>
 
 <p>JSONP是一种传输JSON数据的方法。 </p>
 
@@ -179,7 +177,7 @@
 <img src="media/15553821833628/15553851176437.jpg" alt="JSONP请求/响应的示例" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></li>
 </ul>
 
-<h3 id="toc_5">易受攻击的外部JavaScript对象  </h3>
+<h3 id="toc_4">易受攻击的外部JavaScript对象  </h3>
 
 <p>阿里巴巴的许多网站从以下网址加载外部JavaScript对象：<br/>
 <code>https://ynuf.alipay.com/uid</code><br/>
@@ -272,7 +270,7 @@ um.__idcb(&quot;&quot;)+alert(&quot;Injected&quot;)
 
 <p>由于没有对cookie值进行过滤，因此可以注入恶意代码。但什么样的漏洞才能导致控制cookie呢？</p>
 
-<h3 id="toc_6">Cookie中的一些问题 </h3>
+<h3 id="toc_5">Cookie中的一些问题 </h3>
 
 <p>根据RFC6265的规定，a.b.com可以设置一个属性为.b.com或a.b.com属性的cookie键值，而且访问b.com的时候很自然的.b.com的这个cookie也会被发送过去。<br/>
 简单的来说就是：<br/>
@@ -285,7 +283,7 @@ um.__idcb(&quot;&quot;)+alert(&quot;Injected&quot;)
 最后说可以这样设置cookie:<br/>
 <code>uid=&quot;)+alert(&quot;xss;domain=.alipay.com</code></p>
 
-<h3 id="toc_7"> 在*.alipay.com中发现XSS</h3>
+<h3 id="toc_6"> 在*.alipay.com中发现XSS</h3>
 
 <p>通过信息收集发现了doc.open.alipay.com。访问下面的URL将重定用户<br/>
 <code>https://doc.open.alipay.com/doc2/docSearch.htm?treeId=300&amp;keyword=foo</code><br/>
@@ -299,7 +297,7 @@ um.__idcb(&quot;&quot;)+alert(&quot;Injected&quot;)
 XSS过滤原理可能如下：<br/>
 <img src="media/15553821833628/1049983-20190415123744284-1066572162.png" alt="能不能XSS？" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
 
-<h3 id="toc_8">JavaScript的魔力  </h3>
+<h3 id="toc_7">JavaScript的魔力  </h3>
 
 <p>在开始之前，我注意到jQuery中的一个难问题。<br/>
 <em>难点描述</em><br/>
@@ -360,7 +358,7 @@ XSS过滤原理可能如下：<br/>
 <p>构造一个简单的XSS payload。然而，服务器端的数据清洗很烦人。数据处理流程如下：<br/>
 <img src="media/15553821833628/1049983-20190415123934455-648866520.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
 
-<h3 id="toc_9">绕过服务器端清洗 </h3>
+<h3 id="toc_8">绕过服务器端清洗 </h3>
 
 <p>构造XSS的第一步是添加一个新的HTML标记。不过，服务器已经对关键字参数传递的标记应用了某种规则。</p>
 
@@ -390,7 +388,7 @@ XSS过滤原理可能如下：<br/>
 <p>结果却变成了：<br/>
 <img src="media/15553821833628/1049983-20190415124150132-781028666.png" alt="WAF阻断了请求" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
 
-<h3 id="toc_10"> 绕过WAF</h3>
+<h3 id="toc_9"> 绕过WAF</h3>
 
 <p>利用服务器端清洗功能的第二条规则（删除无效的HTML标记）可以成功绕过WAF。<br/>
 <img src="media/15553821833628/15553920954615.jpg" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
@@ -427,7 +425,7 @@ XSS过滤原理可能如下：<br/>
 <p>这两个请求都可以绕过WAF。答对了！<br/>
 <img src="media/15553821833628/1049983-20190415124422116-1752749738.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
 
-<h3 id="toc_11">攻击场景：</h3>
+<h3 id="toc_10">攻击场景：</h3>
 
 <ol>
 <li>构建恶意HTML网页  </li>
@@ -450,14 +448,14 @@ document.cookie=&#39;uid=foo;domain=.alipay.com;path=/&#39;
 因此攻击向量<code>uid</code>通过添加许多垃圾cookie来消除旧cookie，添加<code>uid</code>由payload填充的新cookie。</li>
 </ol>
 
-<h3 id="toc_12">payload 绕waf</h3>
+<h3 id="toc_11">payload 绕waf</h3>
 
 <p>由于WAF阻断了<code>&quot;)+alert(&quot;xss</code>，因此等效值被替换为绕过WAF的编码值：</p>
 
 <pre class="line-numbers"><code class="language-text">document.cookie=&#39;uid=\x22\x29\x2b\x61\x6c\x65\x72\x74\x28\x22\x78\x73\x73;domain=.alipay.com;path=/&#39;
 </code></pre>
 
-<h3 id="toc_13"> 组合攻击</h3>
+<h3 id="toc_12"> 组合攻击</h3>
 
 <p>最终的payload比预期的要简单：</p>
 
@@ -483,7 +481,7 @@ https://passport.damai.cn/loginEn
 
 <p>显然，有更多的网站受到影响</p>
 
-<h3 id="toc_14">最后一击</h3>
+<h3 id="toc_13">最后一击</h3>
 
 <p>最终目标是在阿里巴巴的网站上实现账户接管。这种情况首先诱骗用户点击一个链接，然后如果用户下次登录，该帐户将被泄露。触发漏洞的链接源：</p>
 
