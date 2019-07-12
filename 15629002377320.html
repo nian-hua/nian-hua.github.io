@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  任意PHP大马过安全狗的思路 - NIANHUA BLOG
+  使用python读取银行卡信息 - NIANHUA BLOG
   
   </title>
   
@@ -115,14 +115,14 @@
       <div class="markdown-body article-wrap">
        <div class="article">
           
-          <h1>任意PHP大马过安全狗的思路</h1>
+          <h1>使用python读取银行卡信息</h1>
      
         <div class="read-more clearfix">
-          <span class="date">2019/2/22</span>
+          <span class="date">2019/7/12</span>
 
           <span>posted in&nbsp;</span> 
           
-              <span class="posted-in"><a href='php.html'>PHP</a></span>
+              <span class="posted-in"><a href='miscellany.html'>杂记</a></span>
            
          
           <span class="comments">
@@ -135,35 +135,189 @@
       </div><!-- article -->
 
       <div class="article-content">
-      <p>在之前的文章里，写了一篇《使用include函数打造过狗一句话》</p>
+      <p>之前网上有所谓专家认为，NFC手机有可能成为黑客的“提款机”；也有分析认为，手机只有紧贴着银行卡才能读出有限的卡内信息，也并不能进行转账操作，因此风险并不大。看了这么多，不如自己用python读取一下，看看到底能读取到什么信息呢？<br/>
+<span id="more"></span><!-- more --></p>
 
-<p>后来在吐司论坛有人提起了这样一句话：是不是只要随便上传一个文件用include包含就可以，于是我就尝试了一下，最后发现只需对包含的内容做一些变换即可。</p>
+<h2 id="toc_0">前置准备</h2>
 
-<span id="more"></span><!-- more -->
+<ol>
+<li>ACR122U</li>
+<li>银行卡数张</li>
+<li>ACR122UTools</li>
+<li>EMV TLV查询分析器</li>
+</ol>
 
-<p>找了一个普通木马，在安全狗上去尝试一下：</p>
+<h2 id="toc_1">银行卡能读取出什么信息？</h2>
 
-<p><img src="media/15508214255568/15508215768633.jpg" alt=""/></p>
+<ol>
+<li>姓名</li>
+<li>身份证</li>
+<li>银行卡号</li>
+<li>银行卡有效期限</li>
+<li>近十条消费记录</li>
+<li>电子现金余额(不是银行卡余额)</li>
+</ol>
 
-<p>是用浏览器访问这个马儿，发现被安全狗拦截：</p>
+<p>但并不是所有的银行卡都能读出这些信息，经网友测试:</p>
 
-<p><img src="media/15508214255568/15508215722284.jpg" alt=""/></p>
+<table>
+<thead>
+<tr>
+<th>银行卡</th>
+<th>卡号显示</th>
+<th>卡内剩余金额</th>
+<th>电子钱包余额</th>
+<th>近10笔交易</th>
+<th>身份证号</th>
+</tr>
+</thead>
 
-<p>然后按着老哥刚刚的思路，使用文件包含来包含这个木马：</p>
+<tbody>
+<tr>
+<td>广州银行</td>
+<td>后4位</td>
+<td>不可读</td>
+<td>可读</td>
+<td>可读</td>
+<td>不可读</td>
+</tr>
+<tr>
+<td>建设银行</td>
+<td>全卡号</td>
+<td>不可读</td>
+<td>可读</td>
+<td>可读</td>
+<td>开头末尾2位</td>
+</tr>
+<tr>
+<td>交通银行</td>
+<td>后4位</td>
+<td>不可读</td>
+<td>可读</td>
+<td>可读</td>
+<td>不可读</td>
+</tr>
+<tr>
+<td>招商银行</td>
+<td>全卡号</td>
+<td>不可读</td>
+<td>可读</td>
+<td>可读</td>
+<td>开头末尾2位</td>
+</tr>
+<tr>
+<td>中国银行</td>
+<td>全卡号</td>
+<td>不可读</td>
+<td>可读</td>
+<td>可读</td>
+<td>不可读</td>
+</tr>
+<tr>
+<td>工商银行</td>
+<td>全卡号</td>
+<td>不可读</td>
+<td>可读</td>
+<td>可读</td>
+<td>不可读</td>
+</tr>
+<tr>
+<td>农业银行</td>
+<td>全卡号</td>
+<td>不可读</td>
+<td>可读</td>
+<td>可读</td>
+<td>不可读</td>
+</tr>
+</tbody>
+</table>
 
-<p><img src="media/15508214255568/15508215677019.jpg" alt=""/></p>
+<p>银行卡最多可以记录10条交易日志，这10条是循环日志，可直接读取，但网银或者网上交易NFC读不出，因为交易时芯片没有上电不会记日志。持卡人姓名卡号等如果是明文则必然可以读出，姓名卡号能否读出取决于银行的数据(姓名可以不写到卡里，卡号可以密文)。</p>
 
-<p>但是发现实际上还是被拦截的～～～</p>
+<p>证件号则是PBOC3.0规范新增的，读不出证件号的银行可可能是PBOC2.0。另外，电子现金余额可以100%读，卡内余额(主账户)是读不出的，电子现金账户的钱(余额上限一般为1000)是可以随便刷的，不需要密码。</p>
 
-<p><img src="media/15508214255568/15508214907192.jpg" alt=""/></p>
+<h2 id="toc_2">怎么读取？</h2>
 
-<p>然后分析了一下，发现可以这样绕过安全狗的拦截：</p>
+<p>首先将ACR122U和电脑连接起来，Win10不需要安装驱动的。<br/>
+接下来我们使用ACR122UTools使用指令去读取一下银行卡信息:<br/>
+<img src="media/15629002377320/123.png" alt="123"/><br/>
+创建一个新的连接。<br/>
+<img src="media/15629002377320/234.png" alt="234"/><br/>
+发送指令选择卡片，命令:</p>
 
-<p><img src="media/15508214255568/15508214969847.jpg" alt=""/></p>
+<pre class="line-numbers"><code class="language-text">00A4040007A0000003330101
+</code></pre>
 
-<p>就是将文件名进行分割，查看一下效果：</p>
+<p><img src="media/15629002377320/15629317127642.jpg" alt="" style="width:792px;"/><br/>
+接下来获取银行卡卡号、有效期等信息,指令:</p>
 
-<p><img src="media/15508214255568/15508215586494.jpg" alt=""/></p>
+<pre class="line-numbers"><code class="language-text">00B2011400
+</code></pre>
+
+<p><img src="media/15629002377320/15629318916611.jpg" alt="" style="width:607px;"/><br/>
+因为这张图里有自己的信息，所有我从网上找了张图片解析出卡号和有效期等信息:<br/>
+<img src="media/15629002377320/15629319853615.jpg" alt=""/><br/>
+其他的我都不截图了，这里给出指令大家尝试一下:</p>
+
+<pre class="line-numbers"><code class="language-text">00B2010C00
+</code></pre>
+
+<p>获取最近十条交易记录:</p>
+
+<pre class="line-numbers"><code class="language-text">00B2015C00
+00B2025C00
+00B2035C00
+00B2045C00
+...
+00B2095C00
+</code></pre>
+
+<p>emmm，知道如何去获取数据之后，接下来就需要使用python脚本编写程序获取银行卡数据</p>
+
+<h2 id="toc_3">python 读取</h2>
+
+<p>我们需要使用到pyscard这个库，安装也很简单:</p>
+
+<pre class="line-numbers"><code class="language-text">pip install pyscard
+</code></pre>
+
+<p>接下来我们尝试一下和银行卡交互数据</p>
+
+<pre class="line-numbers"><code class="language-text">&gt;&gt;&gt; from smartcard.System import readers
+&gt;&gt;&gt; from smartcard.util import toHexString
+&gt;&gt;&gt;
+&gt;&gt;&gt; r=readers()
+&gt;&gt;&gt; connection = r[0].createConnection()
+&gt;&gt;&gt; connection.connect()
+&gt;&gt;&gt; SELECT = [0x00,0xA4,0x04,0x00,0x07,0xA0,0x00,0x00,0x03,0x33,0x01,0x01]
+&gt;&gt;&gt; data, sw1, sw2 = connection.transmit( SELECT)
+&gt;&gt;&gt; print data
+.......data.......
+</code></pre>
+
+<p>我们选择卡片之后就需要发送读取信息的指令</p>
+
+<pre class="line-numbers"><code class="language-text">&gt;&gt;&gt; SELECT = [0x00,0xB2,0x01,0x14,0x00]
+&gt;&gt;&gt; data, sw1, sw2 = connection.transmit(SELECT)
+&gt;&gt;&gt; print data
+.......data.......
+</code></pre>
+
+<p>通过处理ASC122U返回的数据，我们可以编写如下脚本:<br/>
+<img src="media/15629002377320/15629329682502.jpg" alt="" style="width:942px;"/></p>
+
+<h2 id="toc_4">工具地址:</h2>
+
+<p><a href="media/15629002377320/%E5%B0%8F%E5%B7%A5%E5%85%B7.zip">小工具</a></p>
+
+<h2 id="toc_5">敬请指正</h2>
+
+<pre class="line-numbers"><code class="language-text">本文引用了以下文章，感谢:
+https://www.zhihu.com/question/24106690
+https://www.cnblogs.com/zfyouxi/p/4078418.html
+https://www.cnblogs.com/nightnine/p/5502753.html
+http://blog.sina.com.cn/s/blog_625033800102uxwt.html
+</code></pre>
 
 
     
@@ -174,16 +328,13 @@
         <div class="large-6 columns">
         <p class="text-left" style="padding:15px 0px;">
       
-          <a href="Remove-Baidu-Hot.html" 
-          title="Previous Post: 编写屏蔽百度推荐插件">&laquo; 编写屏蔽百度推荐插件</a>
-      
         </p>
         </div>
         <div class="large-6 columns">
       <p class="text-right" style="padding:15px 0px;">
       
-          <a  href="php-include-trojan.html" 
-          title="Next Post: 使用include函数打造过狗一句话">使用include函数打造过狗一句话 &raquo;</a>
+          <a  href="15628404058766.html" 
+          title="Next Post: 如何使用电蚊拍制作一个小黑盒">如何使用电蚊拍制作一个小黑盒 &raquo;</a>
       
       </p>
         </div>
